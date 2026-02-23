@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🐾 Yuka Canin</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d1018;--surface:#161922;--surface2:#1e2230;--surface3:#252940;
+  --accent:#f5a623;--accent2:#ff6535;--green:#22c55e;--green2:#16a34a;
+  --red:#ef4444;--yellow:#eab308;--blue:#60a5fa;--purple:#a78bfa;
+  --opff:#3dba8c;
+  --text:#f1f5f9;--text2:#94a3b8;--border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
+  --radius:18px;--radius-sm:11px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;min-height:100dvh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 45% at 15% 8%,rgba(245,166,35,.1) 0%,transparent 55%),
+             radial-gradient(ellipse 55% 65% at 85% 85%,rgba(255,101,53,.09) 0%,transparent 55%)}
+.app{position:relative;z-index:1;max-width:500px;margin:0 auto;padding-bottom:110px}
+
+/* CONFIG */
+.config-banner{margin:14px 16px 0;background:linear-gradient(135deg,rgba(245,166,35,.12),rgba(255,101,53,.08));border:1px solid rgba(245,166,35,.3);border-radius:var(--radius);padding:14px 16px}
+.cb-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.cb-title{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--accent)}
+.cb-sub{font-size:11px;color:var(--text2)}
+.url-row{display:flex;gap:8px}
+.url-row input{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:9px;color:var(--text);font-size:12px;padding:9px 11px;outline:none}
+.url-row input::placeholder{color:rgba(255,255,255,.2)}
+.btn-save-url{background:var(--accent);color:#000;border:none;border-radius:9px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;padding:9px 16px;cursor:pointer;flex-shrink:0}
+.status-line{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:11px;color:var(--text2)}
+.dot-s{width:7px;height:7px;border-radius:50%;background:var(--text2);flex-shrink:0}
+.dot-s.ok{background:var(--green);animation:blink 2s infinite}
+.dot-s.err{background:var(--red)}.dot-s.loading{background:var(--yellow);animation:blink .6s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* HEADER */
+.header{padding:20px 20px 12px;text-align:center}
+.paw{font-size:44px;display:block;margin-bottom:8px;animation:float 3.5s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-7px) rotate(-3deg)}}
+.header h1{font-family:'Syne',sans-serif;font-weight:800;font-size:28px;letter-spacing:-.5px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header p{color:var(--text2);font-size:12px;margin-top:3px}
+
+/* MODE TABS */
+.mode-tabs{display:flex;gap:8px;padding:12px 16px 0}
+.mode-tab{flex:1;padding:13px 8px;border:1.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text2);font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;text-align:center;transition:all .2s;-webkit-appearance:none}
+.mode-tab.active-food{background:linear-gradient(135deg,rgba(245,166,35,.2),rgba(255,101,53,.12));border-color:var(--accent);color:var(--accent)}
+.mode-tab.active-treat{background:linear-gradient(135deg,rgba(167,139,250,.2),rgba(96,165,250,.12));border-color:var(--purple);color:var(--purple)}
+
+/* PROGRESS */
+.prog-wrap{padding:12px 20px 16px}
+.prog-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.prog-label{font-size:12px;font-weight:500;color:var(--text2)}
+.prog-frac{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--accent)}
+.prog-frac.tm{color:var(--purple)}
+.prog-track{height:3px;background:var(--surface3);border-radius:99px;overflow:hidden}
+.prog-bar{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .45s cubic-bezier(.4,0,.2,1)}
+.prog-bar.tm{background:linear-gradient(90deg,var(--purple),var(--blue))}
+.step-dots{display:flex;justify-content:center;gap:5px;padding-bottom:14px}
+.sdot{height:5px;border-radius:99px;background:var(--surface3);transition:all .35s cubic-bezier(.4,0,.2,1);width:5px}
+.sdot.done{background:rgba(245,166,35,.35)}.sdot.active{background:var(--accent);width:22px}
+.sdot.done-t{background:rgba(167,139,250,.35)}.sdot.active-t{background:var(--purple);width:22px}
+
+/* STEPS */
+.step{display:none;padding:0 16px}
+.step.active{display:block;animation:slideIn .28s cubic-bezier(.4,0,.2,1)}
+@keyframes slideIn{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:translateX(0)}}
+.step-head{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.step-ico{width:46px;height:46px;border-radius:13px;flex-shrink:0;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 16px rgba(245,166,35,.3)}
+.step-ico.treat{background:linear-gradient(135deg,var(--purple),var(--blue));box-shadow:0 4px 16px rgba(167,139,250,.3)}
+.step-ico.sc{background:linear-gradient(135deg,var(--opff),#1d9e75);box-shadow:0 4px 16px rgba(61,186,140,.3)}
+.step-ttl{font-family:'Syne',sans-serif;font-weight:700;font-size:18px}
+.step-sub{font-size:12px;color:var(--text2);margin-top:2px}
+
+/* SOURCE BADGES - affichés à côté des labels de champ */
+.src-badge{display:inline-flex;align-items:center;gap:3px;border-radius:99px;padding:2px 8px;font-size:10px;font-weight:700;flex-shrink:0}
+.src-opff{background:rgba(61,186,140,.15);color:var(--opff);border:1px solid rgba(61,186,140,.3)}
+.src-manual{background:rgba(96,165,250,.12);color:var(--blue);border:1px solid rgba(96,165,250,.25)}
+.src-fediaf{background:rgba(234,179,8,.12);color:var(--yellow);border:1px solid rgba(234,179,8,.25)}
+
+/* LÉGENDE SOURCES */
+.src-legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;padding:10px 12px;background:var(--surface2);border-radius:var(--radius-sm)}
+.sl-item{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2)}
+
+/* SCAN ZONE */
+.scan-zone{background:linear-gradient(135deg,rgba(61,186,140,.1),rgba(96,165,250,.06));border:2px dashed rgba(61,186,140,.35);border-radius:var(--radius);padding:22px 16px;margin-bottom:12px;text-align:center;position:relative;overflow:hidden}
+.scan-line{position:absolute;left:8%;right:8%;height:2px;background:linear-gradient(90deg,transparent,var(--opff),transparent);animation:scanAnim 2.5s ease-in-out infinite;opacity:.7}
+@keyframes scanAnim{0%{top:20%;opacity:0}20%{opacity:1}80%{opacity:1}100%{top:80%;opacity:0}}
+.scan-icon{font-size:36px;letter-spacing:1px;display:block;margin-bottom:6px;color:var(--opff);font-family:monospace}
+.scan-title{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--opff);margin-bottom:3px}
+.scan-sub{font-size:11px;color:var(--text2)}
+
+.barcode-row{display:flex;gap:8px;margin-bottom:12px}
+.barcode-row input{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-size:18px;padding:14px 14px;outline:none;letter-spacing:3px;font-family:'Syne',sans-serif;font-weight:700;transition:border-color .2s}
+.barcode-row input:focus{border-color:var(--opff);box-shadow:0 0 0 3px rgba(61,186,140,.12)}
+.barcode-row input::placeholder{color:rgba(255,255,255,.18);font-size:13px;letter-spacing:0;font-weight:400;font-family:'DM Sans',sans-serif}
+.btn-lookup{background:linear-gradient(135deg,var(--opff),#1d9e75);border:none;border-radius:var(--radius-sm);color:#fff;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;padding:14px 18px;cursor:pointer;flex-shrink:0;transition:all .15s;-webkit-appearance:none}
+.btn-lookup:disabled{opacity:.4;cursor:not-allowed}
+.btn-lookup:not(:disabled):active{transform:scale(.96)}
+
+/* LOADING */
+.lookup-state{display:none;padding:16px;text-align:center}
+.lookup-state.show{display:block}
+.spinner{width:36px;height:36px;border:3px solid var(--surface3);border-top-color:var(--opff);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* PRODUCT FOUND CARD */
+.product-found{display:none;background:linear-gradient(135deg,rgba(61,186,140,.1),rgba(96,165,250,.06));border:1.5px solid rgba(61,186,140,.35);border-radius:var(--radius);padding:16px;margin-bottom:12px;animation:slideIn .3s cubic-bezier(.4,0,.2,1)}
+.product-found.show{display:block}
+.pf-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+.pf-img{width:60px;height:60px;border-radius:10px;object-fit:contain;background:var(--surface2);flex-shrink:0;border:1px solid var(--border2)}
+.pf-img-ph{width:60px;height:60px;border-radius:10px;background:var(--surface2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:26px}
+.pf-info{flex:1}
+.pf-name{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;margin-bottom:2px}
+.pf-brand{font-size:12px;color:var(--text2);margin-bottom:5px}
+.opff-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(61,186,140,.15);border:1px solid rgba(61,186,140,.3);border-radius:99px;padding:3px 10px;font-size:10px;font-weight:700;color:var(--opff)}
+.pf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
+.pf-cell{background:var(--surface);border-radius:9px;padding:8px 10px;text-align:center}
+.pf-cell .pc-v{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--opff)}
+.pf-cell .pc-v.missing{color:var(--text2);font-size:11px;font-weight:500}
+.pf-cell .pc-l{font-size:9px;color:var(--text2);margin-top:1px}
+.pf-completeness{font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.5}
+.pf-completeness .nb-opff{color:var(--opff);font-weight:700}
+.pf-completeness .nb-missing{color:var(--yellow);font-weight:700}
+.btn-use-opff{width:100%;padding:14px;background:linear-gradient(135deg,var(--opff),#1d9e75);border:none;border-radius:var(--radius-sm);color:#fff;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;cursor:pointer;margin-bottom:8px;-webkit-appearance:none}
+.btn-skip-manual{width:100%;padding:12px;background:transparent;border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text2);font-size:13px;cursor:pointer;-webkit-appearance:none}
+
+/* NOT FOUND */
+.not-found{display:none;background:rgba(245,166,35,.07);border:1px solid rgba(245,166,35,.3);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.not-found.show{display:block}
+.nf-title{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--yellow);margin-bottom:6px}
+.nf-text{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:12px}
+.nf-text a{color:var(--opff)}
+.btn-manual-start{width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:var(--radius-sm);color:#000;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;cursor:pointer;-webkit-appearance:none}
+
+/* CARDS & INPUTS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 15px;margin-bottom:10px;transition:border-color .2s}
+.card.src-opff-card{border-color:rgba(61,186,140,.3);background:linear-gradient(135deg,rgba(61,186,140,.04),var(--surface))}
+.card:focus-within{border-color:rgba(245,166,35,.35)}
+.card.calc-card{background:linear-gradient(135deg,rgba(96,165,250,.06),rgba(245,166,35,.04));border-color:rgba(96,165,250,.2)}
+.flabel{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:7px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.badge{font-size:10px;padding:2px 8px;border-radius:99px;font-weight:600}
+.badge-label{background:var(--surface3);color:var(--accent)}
+.badge-calc{background:rgba(96,165,250,.15);color:var(--blue)}
+.badge-auto{background:rgba(34,197,94,.15);color:var(--green)}
+.badge-treat{background:rgba(167,139,250,.15);color:var(--purple)}
+.req{color:var(--accent2);font-size:11px}
+.hint{font-size:11px;color:var(--text2);font-style:italic;margin-bottom:7px;line-height:1.4}
+.label-tip{background:var(--surface2);border-radius:9px;padding:10px 12px;margin-bottom:10px;display:flex;gap:10px;align-items:flex-start}
+.lt-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.lt-text{font-size:11px;color:var(--text2);line-height:1.5}
+.lt-text strong{color:var(--text);display:block;margin-bottom:2px}
+input[type="text"],input[type="number"]{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;padding:12px 14px;outline:none;-webkit-appearance:none;transition:border-color .2s,background .2s}
+input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(245,166,35,.12)}
+input::placeholder{color:rgba(255,255,255,.18);font-size:14px}
+input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none}
+/* Couleur de fond selon source */
+input.src-opff{border-color:rgba(61,186,140,.5);background:linear-gradient(135deg,rgba(61,186,140,.08),var(--surface2))}
+input.src-manual{border-color:rgba(96,165,250,.4);background:linear-gradient(135deg,rgba(96,165,250,.06),var(--surface2))}
+
+/* ENERGY BOX */
+.energy-box{background:linear-gradient(135deg,rgba(245,166,35,.1),rgba(255,101,53,.07));border:1px solid rgba(245,166,35,.25);border-radius:var(--radius);padding:14px 15px;margin-bottom:10px}
+.eb-title{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--accent);margin-bottom:10px}
+.energy-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.energy-val{background:var(--surface);border-radius:9px;padding:10px 12px;text-align:center}
+.ev-num{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--accent)}
+.ev-label{font-size:10px;color:var(--text2);margin-top:2px}
+.energy-source{font-size:11px;color:var(--text2);margin-top:8px;text-align:center;font-style:italic}
+
+/* CHOICES */
+.choices{display:flex;gap:7px;flex-wrap:wrap}
+.cbtn{flex:1;min-width:68px;background:var(--surface2);border:1.5px solid var(--border2);border-radius:var(--radius-sm);color:var(--text2);font-size:13px;font-weight:500;padding:10px 8px;cursor:pointer;text-align:center;transition:all .15s;-webkit-appearance:none;line-height:1.3}
+.cbtn:active{transform:scale(.96)}
+.cbtn.sel{background:linear-gradient(135deg,rgba(245,166,35,.18),rgba(255,101,53,.12));border-color:var(--accent);color:var(--accent);font-weight:600}
+.cbtn.sel-ok{background:rgba(34,197,94,.12);border-color:var(--green);color:var(--green);font-weight:600}
+.cbtn.sel-danger{background:rgba(239,68,68,.14);border-color:var(--red);color:var(--red);font-weight:600}
+.cbtn.sel-warn{background:rgba(234,179,8,.12);border-color:var(--yellow);color:var(--yellow);font-weight:600}
+.cbtn.sel-purple{background:rgba(167,139,250,.15);border-color:var(--purple);color:var(--purple);font-weight:600}
+
+/* SLIDER */
+.slider-box{padding:2px 0 4px}
+input[type="range"]{width:100%;-webkit-appearance:none;height:4px;border-radius:99px;background:var(--surface2);outline:none;cursor:pointer;border:none;box-shadow:none;padding:0}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 2px 10px rgba(245,166,35,.45);cursor:pointer}
+.slider-marks{display:flex;justify-content:space-between;margin-top:5px}
+.slider-marks span{font-size:10px;color:var(--text2)}
+.slider-current{text-align:center;margin-top:5px;font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--accent);transition:color .3s}
+.cap-display{text-align:center;padding:8px 0 4px;font-family:'Syne',sans-serif;font-weight:800;font-size:30px;color:var(--text2);transition:color .3s}
+.cap-status{text-align:center;font-size:12px;color:var(--text2);transition:color .3s}
+
+/* DANGER */
+.danger-alert{background:rgba(239,68,68,.1);border:1.5px solid rgba(239,68,68,.35);border-radius:var(--radius);padding:13px 15px;margin-bottom:10px}
+.da-title{color:var(--red);font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.danger-alert p{font-size:12px;color:#fca5a5;line-height:1.4}
+
+/* RATION */
+.ration-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 15px;margin-bottom:10px}
+.ration-result{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:var(--radius-sm);padding:12px 14px}
+.rr-label{font-size:11px;color:var(--text2)}
+.rr-val{font-family:'Syne',sans-serif;font-weight:700;font-size:16px}
+.ration-alert{border-radius:var(--radius-sm);padding:11px 14px;font-size:12px;font-weight:500;margin-top:8px;line-height:1.5}
+.ration-alert.ok{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:var(--green)}
+.ration-alert.warn{background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.3);color:var(--yellow)}
+.ration-alert.bad{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--red)}
+.treat-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,rgba(167,139,250,.15),rgba(96,165,250,.1));border:1px solid rgba(167,139,250,.3);border-radius:99px;padding:4px 12px;font-size:11px;font-weight:600;color:var(--purple);margin-bottom:12px}
+
+/* NAV */
+.nav-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:500px;padding:12px 16px 20px;background:linear-gradient(to top,var(--bg) 65%,transparent);display:flex;gap:10px;z-index:200}
+.btn-prev{flex:0 0 auto;width:52px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-appearance:none}
+.btn-next{flex:1;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:var(--radius-sm);color:#000;font-family:'Syne',sans-serif;font-weight:800;font-size:15px;padding:16px;cursor:pointer;box-shadow:0 4px 20px rgba(245,166,35,.35);transition:all .15s;-webkit-appearance:none;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-next:active{transform:scale(.97)}
+.btn-next.tm{background:linear-gradient(135deg,var(--purple),var(--blue));box-shadow:0 4px 20px rgba(167,139,250,.35)}
+
+/* SCORE PAGE */
+.score-ring-container{position:relative;width:200px;height:200px;margin:0 auto 20px}
+.score-ring-container svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--surface3);stroke-width:14}
+.ring-fill{fill:none;stroke-width:14;stroke-linecap:round;transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1)}
+.score-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-big{font-family:'Syne',sans-serif;font-weight:800;font-size:46px;line-height:1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.score-big.ts{background:linear-gradient(135deg,var(--purple),var(--blue));-webkit-background-clip:text;background-clip:text}
+.score-pts{font-size:13px;color:var(--text2)}
+.score-verdict{text-align:center;margin-bottom:20px}
+.verdict-stars{font-size:20px;letter-spacing:2px;margin-bottom:4px}
+.verdict-label{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:4px}
+.verdict-desc{font-size:13px;color:var(--text2)}
+.breakdown{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.bk-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 12px}
+.bk-name{font-size:11px;color:var(--text2);margin-bottom:5px}
+.bk-bar-track{height:3px;background:var(--surface3);border-radius:99px;margin-bottom:5px;overflow:hidden}
+.bk-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.bk-bar-fill.tm{background:linear-gradient(90deg,var(--purple),var(--blue))}
+.bk-vals{display:flex;justify-content:space-between;align-items:baseline}
+.bk-val{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:var(--accent)}
+.bk-val.tm{color:var(--purple)}
+.bk-max{font-size:11px;color:var(--text2)}
+
+/* ══ RÉCAP SOURCES (résultat) ══ */
+.sources-recap{border-radius:var(--radius);overflow:hidden;margin-bottom:16px;border:1px solid var(--border2)}
+.sr-header{padding:14px 16px;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;background:var(--surface2);display:flex;align-items:center;justify-content:space-between}
+.sr-header .sr-title{display:flex;align-items:center;gap:8px}
+.fiability-pct{font-size:24px;font-weight:800}
+.fiability-pct.high{color:var(--green)}
+.fiability-pct.med{color:var(--yellow)}
+.fiability-pct.low{color:var(--red)}
+.sr-bar-wrap{height:6px;background:var(--surface3);display:flex;overflow:hidden}
+.sr-bar-opff{background:var(--opff);height:100%;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.sr-bar-manual{background:var(--blue);height:100%;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.sr-bar-fediaf{background:var(--yellow);height:100%;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.sr-body{padding:14px 16px;background:var(--surface)}
+.sr-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.sr-row:last-child{border-bottom:none}
+.sr-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.sr-dot.opff{background:var(--opff)}
+.sr-dot.manual{background:var(--blue)}
+.sr-dot.fediaf{background:var(--yellow)}
+.sr-content{flex:1}
+.sr-row-title{font-size:12px;font-weight:600;margin-bottom:3px}
+.sr-row-title.opff{color:var(--opff)}
+.sr-row-title.manual{color:var(--blue)}
+.sr-row-title.fediaf{color:var(--yellow)}
+.sr-fields{display:flex;flex-wrap:wrap;gap:4px}
+.sr-field-tag{font-size:10px;padding:2px 7px;border-radius:99px;background:var(--surface2);color:var(--text2)}
+.sr-count{font-size:11px;color:var(--text2);margin-top:5px;font-style:italic}
+.sr-note{font-size:11px;color:var(--text2);padding:10px 16px;background:rgba(234,179,8,.05);border-top:1px solid rgba(234,179,8,.15);line-height:1.5}
+.sr-note strong{color:var(--yellow)}
+
+/* CONVERSION RECAP */
+.conversion-recap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:16px}
+.cr-title{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--blue);margin-bottom:10px}
+.cr-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.cr-item{background:var(--surface2);border-radius:8px;padding:8px 10px}
+.ci-label{font-size:10px;color:var(--text2);margin-bottom:2px}
+.ci-val{font-family:'Syne',sans-serif;font-weight:700;font-size:13px}
+.ci-src{font-size:9px;margin-top:2px}
+
+.disq-banner{background:rgba(239,68,68,.12);border:2px solid var(--red);border-radius:var(--radius);padding:18px;text-align:center;margin-bottom:20px}
+.disq-banner .di{font-size:36px;margin-bottom:8px}
+.disq-banner h3{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--red);margin-bottom:6px}
+.disq-banner p{font-size:13px;color:#fca5a5}
+.btn-send{width:100%;padding:18px;background:linear-gradient(135deg,var(--green2),var(--green));border:none;border-radius:var(--radius);color:#fff;font-family:'Syne',sans-serif;font-weight:800;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 24px rgba(34,197,94,.3);transition:all .15s;margin-bottom:10px;-webkit-appearance:none}
+.btn-send:disabled{opacity:.6;cursor:not-allowed}
+.btn-send.sending{animation:sendPulse 1s infinite}
+.btn-send.tm{background:linear-gradient(135deg,var(--purple),var(--blue))}
+@keyframes sendPulse{0%,100%{opacity:1}50%{opacity:.7}}
+.btn-new{width:100%;padding:14px;background:transparent;border:1px dashed var(--border2);border-radius:var(--radius);color:var(--text2);font-size:14px;cursor:pointer;-webkit-appearance:none;margin-bottom:8px}
+.btn-switch-mode{width:100%;padding:12px;background:transparent;border:1px solid rgba(167,139,250,.3);border-radius:var(--radius);color:var(--purple);font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;-webkit-appearance:none}
+.send-status{border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;font-weight:500;text-align:center;margin-bottom:10px;display:none}
+.send-status.ok{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:var(--green);display:block}
+.send-status.err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--red);display:block}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border2);border-radius:99px;padding:10px 20px;font-size:13px;font-weight:500;color:var(--text);box-shadow:0 4px 24px rgba(0,0,0,.4);z-index:999;opacity:0;pointer-events:none;transition:opacity .3s,bottom .3s;white-space:nowrap}
+.toast.show{opacity:1;bottom:115px}
+.toast.ok{border-color:rgba(34,197,94,.4);color:var(--green)}
+.toast.err{border-color:rgba(239,68,68,.4);color:var(--red)}
+.toast.opff{border-color:rgba(61,186,140,.4);color:var(--opff)}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- CONFIG -->
+<div class="config-banner">
+  <div class="cb-top"><div style="font-size:22px">🔗</div><div><div class="cb-title">Connexion Google Sheets</div><div class="cb-sub">Colle ton URL Apps Script une seule fois</div></div></div>
+  <div class="url-row">
+    <input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec">
+    <button class="btn-save-url" onclick="saveUrl()">Sauvegarder</button>
+  </div>
+  <div class="status-line"><div class="dot-s" id="dotStatus"></div><span id="statusText">En attente de l'URL</span></div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <span class="paw">🐾</span>
+  <h1>Yuka Canin</h1>
+  <p>Scan code barre → auto-remplissage <strong style="color:var(--opff)">Open Pet Food Facts</strong></p>
+</div>
+
+<!-- MODE TABS -->
+<div class="mode-tabs">
+  <button class="mode-tab active-food" id="tabFood" onclick="switchMode('food')">🥣 Aliment complet</button>
+  <button class="mode-tab" id="tabTreat" onclick="switchMode('treat')">🦴 Friandise</button>
+</div>
+
+<!-- PROGRESS -->
+<div class="prog-wrap">
+  <div class="prog-meta">
+    <span class="prog-label" id="progLabel">Scan code barre</span>
+    <span class="prog-frac" id="progFrac">1 / 8</span>
+  </div>
+  <div class="prog-track"><div class="prog-bar" id="progBar" style="width:12.5%"></div></div>
+</div>
+<div class="step-dots" id="stepDots"></div>
+
+<!-- ═══════════════════════════ ALIMENT COMPLET ═══════════════════════════ -->
+<div id="foodMode">
+
+<!-- STEP F1 : SCAN CODE BARRE -->
+<div class="step active" id="stepF1">
+  <div class="step-head"><div class="step-ico sc">📷</div><div><div class="step-ttl">Code Barre</div><div class="step-sub">Recherche automatique Open Pet Food Facts</div></div></div>
+
+  <div class="scan-zone">
+    <div class="scan-line"></div>
+    <span class="scan-icon">||| |||| |||||| |||</span>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--opff);margin-bottom:3px">Tape le code barre ci-dessous</div>
+    <div style="font-size:11px;color:var(--text2)">Sous le paquet · 8 à 13 chiffres</div>
+  </div>
+
+  <div class="barcode-row">
+    <input type="text" id="barcodeInput" placeholder="Ex : 3182550402286" inputmode="numeric"
+      oninput="onBarcodeType(this.value)"
+      onkeydown="if(event.key==='Enter'&&!document.getElementById('btnLookup').disabled)lookupBarcode()">
+    <button class="btn-lookup" id="btnLookup" onclick="lookupBarcode()" disabled>🔍 Chercher</button>
+  </div>
+
+  <!-- État : chargement -->
+  <div class="lookup-state" id="lookupLoading">
+    <div class="spinner"></div>
+    <p style="font-size:13px;color:var(--text2)">Recherche dans Open Pet Food Facts…</p>
+  </div>
+
+  <!-- État : produit trouvé -->
+  <div class="product-found" id="productFound">
+    <div class="pf-head">
+      <div class="pf-img-ph" id="pfImgPh">📦</div>
+      <img id="pfImg" class="pf-img" style="display:none" alt="">
+      <div class="pf-info">
+        <div class="pf-name" id="pfName">—</div>
+        <div class="pf-brand" id="pfBrand"></div>
+        <div class="opff-badge">🟢 Open Pet Food Facts</div>
+      </div>
+    </div>
+    <div class="pf-grid" id="pfGrid"></div>
+    <div class="pf-completeness" id="pfCompleteness"></div>
+    <button class="btn-use-opff" onclick="confirmOPFF()">✅ Utiliser ces données → Compléter les champs vides</button>
+    <button class="btn-skip-manual" onclick="goManual()">✏️ Ignorer · Saisie manuelle</button>
+  </div>
+
+  <!-- État : non trouvé -->
+  <div class="not-found" id="notFound">
+    <div class="nf-title">🔍 Produit introuvable dans Open Pet Food Facts</div>
+    <div class="nf-text">
+      Ce produit n'est pas encore référencé. Tu peux <a href="https://world.openpetfoodfacts.org/cgi/product.pl" target="_blank">l'ajouter gratuitement sur openpetfoodfacts.org</a> pour aider la communauté.<br><br>
+      Continue en saisie manuelle — les champs vides seront estimés par les <strong style="color:var(--yellow)">moyennes FEDIAF 2024</strong>.
+    </div>
+    <button class="btn-manual-start" onclick="goManual()">✏️ Continuer en saisie manuelle</button>
+  </div>
+</div>
+
+<!-- STEP F2 : IDENTIFICATION -->
+<div class="step" id="stepF2">
+  <div class="step-head"><div class="step-ico">🏷️</div><div><div class="step-ttl">Identification</div><div class="step-sub">Informations du produit</div></div></div>
+  <div class="src-legend">
+    <div class="sl-item"><span class="src-badge src-opff">🟢 OPFF</span> Donnée Open Pet Food Facts</div>
+    <div class="sl-item"><span class="src-badge src-manual">🔵 Manuel</span> Saisi par toi</div>
+    <div class="sl-item"><span class="src-badge src-fediaf">🟡 FEDIAF</span> Estimé</div>
+  </div>
+  <div class="card" id="cardNom"><div class="flabel">Nom de l'aliment <span class="req">*</span><span id="srcNom" class="src-badge" style="display:none"></span></div><input type="text" id="f_nom" placeholder="Ex : Royal Canin Adult Maxi" oninput="markManualText('f_nom','srcNom')"></div>
+  <div class="card" id="cardMarque"><div class="flabel">Marque<span id="srcMarque" class="src-badge" style="display:none"></span></div><input type="text" id="f_marque" placeholder="Ex : Royal Canin" oninput="markManualText('f_marque','srcMarque')"></div>
+  <div class="card"><div class="flabel">Type <span class="req">*</span></div>
+    <div class="choices"><button class="cbtn" onclick="pick(this,'f_type','Sec')">🥜 Croquettes</button><button class="cbtn" onclick="pick(this,'f_type','Humide')">🥣 Pâtée</button></div>
+    <input type="hidden" id="f_type"></div>
+  <div class="card"><div class="flabel">Code barre<span id="srcCode" class="src-badge" style="display:none"></span></div><input type="text" id="f_code" placeholder="3182550402286" inputmode="numeric"></div>
+</div>
+
+<!-- STEP F3 : COMPOSITION -->
+<div class="step" id="stepF3">
+  <div class="step-head"><div class="step-ico">📋</div><div><div class="step-ttl">Composition</div><div class="step-sub">% de l'étiquette — champs OPFF pré-remplis</div></div></div>
+  <div class="label-tip"><div class="lt-icon">💡</div><div class="lt-text"><strong>Champs verts = données Open Pet Food Facts.</strong>Vérifie qu'elles correspondent à ton étiquette et corrige si nécessaire. Les champs encore vides seront estimés par FEDIAF.</div></div>
+  <div class="card" id="cardProt"><div class="flabel">Protéines brutes <span class="badge badge-label">%</span><span id="srcProt" class="src-badge" style="display:none"></span></div><input type="number" id="f_prot_pct" placeholder="Ex : 26" inputmode="decimal" step="0.1" oninput="liveConvert();markManualNum('f_prot_pct','srcProt','cardProt')"></div>
+  <div class="card" id="cardLip"><div class="flabel">Matières grasses <span class="badge badge-label">%</span><span id="srcLip" class="src-badge" style="display:none"></span></div><input type="number" id="f_lip_pct" placeholder="Ex : 16" inputmode="decimal" step="0.1" oninput="liveConvert();markManualNum('f_lip_pct','srcLip','cardLip')"></div>
+  <div class="card" id="cardFib"><div class="flabel">Fibres brutes <span class="badge badge-label">%</span><span id="srcFib" class="src-badge" style="display:none"></span></div><input type="number" id="f_fibres_pct" placeholder="Ex : 2.5" inputmode="decimal" step="0.1" oninput="liveConvert();markManualNum('f_fibres_pct','srcFib','cardFib')"></div>
+  <div class="card" id="cardHum"><div class="flabel">Humidité <span class="badge badge-label">%</span><span id="srcHum" class="src-badge" style="display:none"></span></div><div class="hint">Croquettes ~8–12 % · Pâtées ~75–82 %</div><input type="number" id="f_hum_pct" placeholder="Ex : 10" inputmode="decimal" step="0.1" oninput="liveConvert();markManualNum('f_hum_pct','srcHum','cardHum')"></div>
+  <div class="card" id="cardCen"><div class="flabel">Cendres brutes <span class="badge badge-label">%</span><span id="srcCen" class="src-badge" style="display:none"></span></div><div class="hint">Si absent, laisse vide — estimé FEDIAF</div><input type="number" id="f_cendres_pct" placeholder="Ex : 7" inputmode="decimal" step="0.1" oninput="liveConvert();markManualNum('f_cendres_pct','srcCen','cardCen')"></div>
+  <div class="card"><div class="flabel">Source protéique principale<span id="srcSrcProt" class="src-badge" style="display:none"></span></div><input type="text" id="f_src_prot" placeholder="Ex : poulet frais, farine de saumon…" oninput="markManualText('f_src_prot','srcSrcProt')"></div>
+  <div class="energy-box">
+    <div class="eb-title">⚡ Énergie calculée automatiquement</div>
+    <div class="energy-grid">
+      <div class="energy-val"><div class="ev-num" id="ev_kcal100">—</div><div class="ev-label">kcal / 100 g</div></div>
+      <div class="energy-val"><div class="ev-num" id="ev_kcalkg">—</div><div class="ev-label">kcal / kg MS</div></div>
+    </div>
+    <div class="energy-source" id="energySource">Remplis les % pour voir l'énergie</div>
+  </div>
+  <div class="card calc-card"><div class="flabel">Énergie déclarée <span class="badge badge-calc">optionnel — kcal/100g</span><span id="srcEm" class="src-badge" style="display:none"></span></div><div class="hint">Laisse vide → formule Atwater FEDIAF</div><input type="number" id="f_em_declared" placeholder="Ex : 380" inputmode="numeric" oninput="liveConvert();markManualNum('f_em_declared','srcEm','')"></div>
+</div>
+
+<!-- STEP F4 : ACIDES GRAS -->
+<div class="step" id="stepF4">
+  <div class="step-head"><div class="step-ico">🧬</div><div><div class="step-ttl">Acides Gras</div><div class="step-sub">% étiquette · moyenne FEDIAF si absent</div></div></div>
+  <div class="label-tip"><div class="lt-icon">📌</div><div class="lt-text"><strong>Rarement dans OPFF ni sur étiquettes basiques.</strong>Cherche "Acide linoléique" dans les additifs. Si absent → FEDIAF : LA=4,5 g · ALA=0,3 g · EPA+DHA=0,25 g / 1000 kcal.</div></div>
+  <div class="card" id="cardLA"><div class="flabel">Acide Linoléique Ω-6 <span class="badge badge-label">%</span><span id="srcLA" class="src-badge" style="display:none"></span></div><input type="number" id="f_la_pct" placeholder="Ex : 1.8" inputmode="decimal" step="0.01" oninput="liveConvert();markManualNum('f_la_pct','srcLA','cardLA')"></div>
+  <div class="card" id="cardALA"><div class="flabel">Acide α-Linolénique Ω-3 <span class="badge badge-label">%</span><span id="srcALA" class="src-badge" style="display:none"></span></div><input type="number" id="f_ala_pct" placeholder="Ex : 0.14" inputmode="decimal" step="0.01" oninput="liveConvert();markManualNum('f_ala_pct','srcALA','cardALA')"></div>
+  <div class="card" id="cardEPA"><div class="flabel">EPA + DHA Ω-3 <span class="badge badge-label">%</span><span id="srcEPA" class="src-badge" style="display:none"></span></div><input type="number" id="f_epadha_pct" placeholder="Ex : 0.24" inputmode="decimal" step="0.01" oninput="liveConvert();markManualNum('f_epadha_pct','srcEPA','cardEPA')"></div>
+  <div class="card"><div class="flabel">Ratio Ω-6 : Ω-3 <span class="badge badge-auto">calculé auto</span></div><div class="hint">FEDIAF optimal : 4–10</div>
+    <div class="slider-box"><input type="range" id="f_omega" min="1" max="20" step="0.5" value="7" oninput="updateOmega()">
+    <div class="slider-marks"><span>1:1</span><span style="color:var(--green)">✅ 4–10</span><span>20:1</span></div>
+    <div class="slider-current" id="omegaVal">7.0 : 1</div></div></div>
+</div>
+
+<!-- STEP F5 : MINÉRAUX -->
+<div class="step" id="stepF5">
+  <div class="step-head"><div class="step-ico">🪨</div><div><div class="step-ttl">Minéraux</div><div class="step-sub">% étiquette — Ca et P prioritaires</div></div></div>
+  <div class="label-tip"><div class="lt-icon">📌</div><div class="lt-text"><strong>Ca et P viennent parfois d'OPFF.</strong>Cherche aussi dans "Teneurs garanties". Si vide → moyenne FEDIAF (Ca: 1,5 g · P: 1,0 g / 1000 kcal).</div></div>
+  <div class="card" id="cardCa"><div class="flabel">Calcium (Ca) <span class="badge badge-label">%</span><span id="srcCa" class="src-badge" style="display:none"></span></div><input type="number" id="f_ca_pct" placeholder="Ex : 1.2" inputmode="decimal" step="0.01" oninput="liveConvert();liveCapRatio();markManualNum('f_ca_pct','srcCa','cardCa')"></div>
+  <div class="card" id="cardP"><div class="flabel">Phosphore (P) <span class="badge badge-label">%</span><span id="srcP" class="src-badge" style="display:none"></span></div><input type="number" id="f_p_pct" placeholder="Ex : 0.85" inputmode="decimal" step="0.01" oninput="liveConvert();liveCapRatio();markManualNum('f_p_pct','srcP','cardP')"></div>
+  <div class="card"><div class="flabel">⭐ Ratio Ca : P <span class="badge badge-auto">calculé auto</span></div><div class="cap-display" id="capDisplay">— : 1</div><div class="cap-status" id="capStatus">Entrez Ca et P</div></div>
+  <div class="card"><div class="flabel">Potassium (K) <span class="badge badge-label">%</span></div><input type="number" id="f_k_pct" placeholder="Ex : 0.6" inputmode="decimal" step="0.01" oninput="liveConvert()"></div>
+  <div class="card"><div class="flabel">Sodium (Na) <span class="badge badge-label">%</span></div><input type="number" id="f_na_pct" placeholder="Ex : 0.28" inputmode="decimal" step="0.01" oninput="liveConvert()"></div>
+  <div class="card"><div class="flabel">Magnésium (Mg) <span class="badge badge-label">%</span></div><input type="number" id="f_mg_pct" placeholder="Ex : 0.09" inputmode="decimal" step="0.001" oninput="liveConvert()"></div>
+</div>
+
+<!-- STEP F6 : OLIGOS + VITAMINES -->
+<div class="step" id="stepF6">
+  <div class="step-head"><div class="step-ico">⚗️</div><div><div class="step-ttl">Oligo-éléments & Vitamines</div><div class="step-sub">mg/kg ou UI/kg · FEDIAF si absent</div></div></div>
+  <div class="label-tip"><div class="lt-icon">💡</div><div class="lt-text"><strong>Rarement dans OPFF.</strong>Cherche dans "Additifs nutritionnels" sur l'étiquette. Si vide → moyennes FEDIAF utilisées et clairement indiquées dans le résultat.</div></div>
+  <div class="card"><div class="flabel">Zinc (Zn) <span class="badge badge-label">mg/kg</span></div><div class="hint">Moy. FEDIAF : ~90 mg/kg</div><input type="number" id="f_zn_mgkg" placeholder="Ex : 100" inputmode="numeric"></div>
+  <div class="card"><div class="flabel">Fer (Fe) <span class="badge badge-label">mg/kg</span></div><div class="hint">Moy. FEDIAF : ~50 mg/kg</div><input type="number" id="f_fe_mgkg" placeholder="Ex : 50" inputmode="numeric"></div>
+  <div class="card"><div class="flabel">Cuivre (Cu) <span class="badge badge-label">mg/kg</span></div><input type="number" id="f_cu_mgkg" placeholder="Ex : 10" inputmode="decimal" step="0.1"></div>
+  <div class="card"><div class="flabel">Sélénium (Se) <span class="badge badge-label">mg/kg</span></div><input type="number" id="f_se_mgkg" placeholder="Ex : 0.35" inputmode="decimal" step="0.01"></div>
+  <div class="card"><div class="flabel">Iode (I) <span class="badge badge-label">mg/kg</span></div><input type="number" id="f_iode_mgkg" placeholder="Ex : 1.8" inputmode="decimal" step="0.01"></div>
+  <div class="card" style="border-color:rgba(234,179,8,.3)"><div class="flabel" style="color:var(--yellow)">⚠️ Vitamine D3 <span class="badge badge-label">UI/kg</span></div><div class="hint"><strong style="color:var(--red)">MAX : ~800 UI/kg</strong> · Moy. FEDIAF : ~500 UI/kg</div><input type="number" id="f_vitd_uikg" placeholder="Ex : 500" inputmode="numeric"></div>
+  <div class="card"><div class="flabel">Vitamine A <span class="badge badge-label">UI/kg</span></div><input type="number" id="f_vita_uikg" placeholder="Ex : 15000" inputmode="numeric"></div>
+  <div class="card"><div class="flabel">Vitamine E <span class="badge badge-label">mg/kg</span></div><input type="number" id="f_vite_mgkg" placeholder="Ex : 80" inputmode="numeric"></div>
+</div>
+
+<!-- STEP F7 : INGRÉDIENTS -->
+<div class="step" id="stepF7">
+  <div class="step-head"><div class="step-ico">🥩</div><div><div class="step-ttl">Qualité des Ingrédients</div><div class="step-sub">Liste des ingrédients — toujours présente</div></div></div>
+  <div id="opffIngredCard" style="display:none">
+    <div class="label-tip" style="border:1px solid rgba(61,186,140,.3);background:rgba(61,186,140,.06)"><div class="lt-icon">🟢</div><div class="lt-text"><strong>Ingrédients OPFF détectés</strong><div id="opffIngredText" style="margin-top:4px;font-style:normal;color:var(--text)"></div></div></div>
+  </div>
+  <div class="label-tip"><div class="lt-icon">📋</div><div class="lt-text"><strong>Analyse la liste des ingrédients.</strong>Ces infos sont toujours sur l'étiquette — réponds à toutes les questions.</div></div>
+  <div class="card"><div class="flabel">Position des céréales / glucides</div>
+    <div class="choices"><button class="cbtn" onclick="pickDanger(this,'f_pos_glu','1er')">1ère</button><button class="cbtn" onclick="pickWarn(this,'f_pos_glu','2e')">2ème</button><button class="cbtn" onclick="pickWarn(this,'f_pos_glu','3e-5e')">3e–5e</button><button class="cbtn" onclick="pickOk(this,'f_pos_glu','Absent')">✅ Absent</button></div>
+    <input type="hidden" id="f_pos_glu"></div>
+  <div class="card"><div class="flabel">BHA / BHT ?</div>
+    <div class="choices"><button class="cbtn" onclick="pickOk(this,'f_bha','Non')">✅ Non</button><button class="cbtn" onclick="pickDanger(this,'f_bha','Oui')">⚠️ Oui</button></div>
+    <input type="hidden" id="f_bha"></div>
+  <div class="card"><div class="flabel">Colorants artificiels ?</div>
+    <div class="choices"><button class="cbtn" onclick="pickOk(this,'f_color','Non')">✅ Non</button><button class="cbtn" onclick="pickWarn(this,'f_color','Oui')">⚠️ Oui</button></div>
+    <input type="hidden" id="f_color"></div>
+  <div class="card"><div class="flabel">Propylène glycol ?</div>
+    <div class="choices"><button class="cbtn" onclick="pickOk(this,'f_pg','Non')">✅ Non</button><button class="cbtn" onclick="pickDanger(this,'f_pg','Oui')">🚫 Oui</button></div>
+    <input type="hidden" id="f_pg"></div>
+  <div class="card"><div class="flabel">Sucre / sirop de maïs ?</div>
+    <div class="choices"><button class="cbtn" onclick="pickOk(this,'f_sucre','Non')">✅ Non</button><button class="cbtn" onclick="pickWarn(this,'f_sucre','Oui')">⚠️ Oui</button></div>
+    <input type="hidden" id="f_sucre"></div>
+  <div class="card"><div class="flabel">Antioxydants naturels ?</div>
+    <div class="choices"><button class="cbtn" onclick="pickOk(this,'f_antioxydant','Oui')">✅ Oui</button><button class="cbtn" onclick="pickWarn(this,'f_antioxydant','Partiel')">🟡 Partiel</button><button class="cbtn" onclick="pickDanger(this,'f_antioxydant','Non')">❌ Non</button></div>
+    <input type="hidden" id="f_antioxydant"></div>
+  <div class="danger-alert"><div class="da-title">🚨 SUBSTANCES TOXIQUES — Score forcé à 0</div><p>Raisins, chocolat, oignons/ail ou propylène glycol</p></div>
+  <div class="card" style="border-color:rgba(239,68,68,.35)"><div class="flabel" style="color:var(--red)">🍇 Raisins / 🍫 Chocolat / 🧅 Oignons-Ail ?</div>
+    <div class="choices"><button class="cbtn" onclick="pickOk(this,'f_toxiques','Non')">✅ Non</button><button class="cbtn" onclick="pickDanger(this,'f_toxiques','Oui')">🚫 OUI</button></div>
+    <input type="hidden" id="f_toxiques"></div>
+</div>
+
+<!-- STEP F8 : RÉSULTAT -->
+<div class="step" id="stepF8">
+  <div class="step-head"><div class="step-ico">🏆</div><div><div class="step-ttl">Score SNC</div><div class="step-sub">Résultat + sources des données</div></div></div>
+  <div id="scorePage"></div>
+</div>
+
+</div><!-- /foodMode -->
+
+<!-- ═══════════════════════════ FRIANDISE ═══════════════════════════ -->
+<div id="treatMode" style="display:none">
+<div class="step active" id="stepT1">
+  <div class="step-head"><div class="step-ico sc">📷</div><div><div class="step-ttl">Code Barre</div><div class="step-sub">Recherche automatique Open Pet Food Facts</div></div></div>
+  <div class="treat-badge">🦴 Mode Friandise</div>
+  <div class="scan-zone">
+    <div class="scan-line"></div>
+    <span class="scan-icon">||| |||| |||||| |||</span>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--opff);margin-bottom:3px">Tape le code barre ci-dessous</div>
+    <div style="font-size:11px;color:var(--text2)">Sous le paquet · 8 à 13 chiffres</div>
+  </div>
+  <div class="barcode-row">
+    <input type="text" id="barcodeInputT" placeholder="Ex : 3182550402286" inputmode="numeric"
+      oninput="onBarcodeTypeT(this.value)"
+      onkeydown="if(event.key==='Enter'&&!document.getElementById('btnLookupT').disabled)lookupBarcodeT()">
+    <button class="btn-lookup" id="btnLookupT" onclick="lookupBarcodeT()" disabled>🔍 Chercher</button>
+  </div>
+  <div class="lookup-state" id="lookupLoadingT"><div class="spinner"></div><p style="font-size:13px;color:var(--text2)">Recherche dans Open Pet Food Facts…</p></div>
+  <div class="product-found" id="productFoundT">
+    <div class="pf-head">
+      <div class="pf-img-ph" id="pfImgPhT">📦</div>
+      <img id="pfImgT" class="pf-img" style="display:none" alt="">
+      <div class="pf-info"><div class="pf-name" id="pfNameT">—</div><div class="pf-brand" id="pfBrandT"></div><div class="opff-badge">🟢 Open Pet Food Facts</div></div>
+    </div>
+    <div class="pf-grid" id="pfGridT"></div>
+    <div class="pf-completeness" id="pfCompletenessT"></div>
+    <button class="btn-use-opff" onclick="confirmOPFFT()">✅ Utiliser ces données → Compléter les champs vides</button>
+    <button class="btn-skip-manual" onclick="goManualT()">✏️ Ignorer · Saisie manuelle</button>
+  </div>
+  <div class="not-found" id="notFoundT">
+    <div class="nf-title">🔍 Produit introuvable dans Open Pet Food Facts</div>
+    <div class="nf-text">Continue en saisie manuelle — les champs vides seront estimés par les <strong style="color:var(--yellow)">moyennes FEDIAF 2024</strong>.</div>
+    <button class="btn-manual-start" onclick="goManualT()">✏️ Continuer en saisie manuelle</button>
+  </div>
+</div>
+<div class="step" id="stepT2">
+  <div class="step-head"><div class="step-ico treat">🦴</div><div><div class="step-ttl">Identification Friandise</div><div class="step-sub">Informations du produit</div></div></div>
+  <div class="treat-badge">🦴 Mode Friandise — Score adapté sur 100</div>
+  <div class="card"><div class="flabel">Nom <span class="req">*</span><span id="srcTNom" class="src-badge" style="display:none"></span></div><input type="text" id="t_nom" placeholder="Ex : Bâtonnets Canard" oninput="markManualText('t_nom','srcTNom')"></div>
+  <div class="card"><div class="flabel">Marque<span id="srcTMarque" class="src-badge" style="display:none"></span></div><input type="text" id="t_marque" placeholder="Ex : Trixie" oninput="markManualText('t_marque','srcTMarque')"></div>
+  <div class="card"><div class="flabel">Type <span class="req">*</span></div>
+    <div class="choices"><button class="cbtn" onclick="pickPurple(this,'t_type','Bâtonnet')">🥩 Bâtonnet</button><button class="cbtn" onclick="pickPurple(this,'t_type','Biscuit')">🍪 Biscuit</button><button class="cbtn" onclick="pickPurple(this,'t_type','Moelleux')">🧁 Moelleux</button><button class="cbtn" onclick="pickPurple(this,'t_type','Lyophilisé')">🫙 Lyophilisé</button></div>
+    <input type="hidden" id="t_type"></div>
+</div>
+<div class="step" id="stepT3">
+  <div class="step-head"><div class="step-ico treat">📋</div><div><div class="step-ttl">Composition & Ration</div><div class="step-sub">% de l'étiquette · champs OPFF pré-remplis</div></div></div>
+  <div class="label-tip"><div class="lt-icon">💡</div><div class="lt-text"><strong>Champs verts = données Open Pet Food Facts.</strong>Corrige si nécessaire. Les champs vides restent à saisir manuellement.</div></div>
+  <div class="card" id="cardTProt"><div class="flabel">Protéines brutes <span class="badge badge-treat">%</span><span id="srcTProt" class="src-badge" style="display:none"></span></div><div class="hint">Bonne friandise : > 40 %</div><input type="number" id="t_prot_pct" placeholder="Ex : 55" inputmode="decimal" step="0.1" oninput="liveTreat();markManualNum('t_prot_pct','srcTProt','cardTProt')"></div>
+  <div class="card" id="cardTLip"><div class="flabel">Matières grasses <span class="badge badge-treat">%</span><span id="srcTLip" class="src-badge" style="display:none"></span></div><input type="number" id="t_lip_pct" placeholder="Ex : 8" inputmode="decimal" step="0.1" oninput="liveTreat();markManualNum('t_lip_pct','srcTLip','cardTLip')"></div>
+  <div class="card" id="cardTFib"><div class="flabel">Fibres brutes <span class="badge badge-treat">%</span><span id="srcTFib" class="src-badge" style="display:none"></span></div><input type="number" id="t_fibres_pct" placeholder="Ex : 3" inputmode="decimal" step="0.1" oninput="liveTreat();markManualNum('t_fibres_pct','srcTFib','cardTFib')"></div>
+  <div class="card" id="cardTHum"><div class="flabel">Humidité <span class="badge badge-treat">%</span><span id="srcTHum" class="src-badge" style="display:none"></span></div><input type="number" id="t_hum_pct" placeholder="Ex : 20" inputmode="decimal" step="0.1" oninput="liveTreat();markManualNum('t_hum_pct','srcTHum','cardTHum')"></div>
+  <div class="card"><div class="flabel">Source protéique principale</div><input type="text" id="t_src_prot" placeholder="Ex : poulet déshydraté 85 %"></div>
+  <div class="ration-box">
+    <div class="flabel" style="margin-bottom:6px">📊 Apport calorique journalier</div>
+    <div class="hint" style="margin-bottom:10px">WSAVA : friandises = max <strong style="color:var(--yellow)">10 % MER journalier</strong></div>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <div style="flex:1"><div class="flabel" style="margin-bottom:5px">Poids chien <span class="badge badge-treat">kg</span></div><input type="number" id="t_poids_chien" placeholder="Ex : 15" inputmode="decimal" step="0.5" oninput="liveRation()"></div>
+      <div style="flex:1"><div class="flabel" style="margin-bottom:5px">Ration/j <span class="badge badge-treat">g</span></div><input type="number" id="t_ration_g" placeholder="Ex : 20" inputmode="numeric" oninput="liveRation()"></div>
+    </div>
+    <div class="ration-result"><span class="rr-label">% apports journaliers</span><span class="rr-val" id="rationPct" style="color:var(--text2)">— %</span></div>
+    <div id="rationAlert" class="ration-alert" style="display:none"></div>
+  </div>
+</div>
+<div class="step" id="stepT4">
+  <div class="step-head"><div class="step-ico treat">🥩</div><div><div class="step-ttl">Qualité & Toxiques</div><div class="step-sub">Ingrédients + additifs + substances dangereuses</div></div></div>
+  <div id="opffIngredCardT" style="display:none">
+    <div class="label-tip" style="border:1px solid rgba(61,186,140,.3);background:rgba(61,186,140,.06)"><div class="lt-icon">🟢</div><div class="lt-text"><strong>Ingrédients OPFF détectés</strong><div id="opffIngredTextT" style="margin-top:4px;font-style:normal;color:var(--text)"></div></div></div>
+  </div>
+  <div class="card"><div class="flabel">Protéine animale en 1er ingrédient ?</div>
+    <div class="choices"><button class="cbtn" onclick="pickOk(this,'t_prot_first','Oui')">✅ Oui</button><button class="cbtn" onclick="pickDanger(this,'t_prot_first','Non')">❌ Non</button></div>
+    <input type="hidden" id="t_prot_first"></div>
+  <div class="card"><div class="flabel">Sucre / miel / sirop ajouté ?</div>
+    <div class="choices"><button class="cbtn" onclick="pickOk(this,'t_sucre','Non')">✅ Non</button><button class="cbtn" onclick="pickDanger(this,'t_sucre','Oui')">⚠️ Oui</button></div>
+    <input type="hidden" id="t_sucre"></div>
+  <div class="card"><div class="flabel">Colorants / arômes artificiels ?</div>
+    <div class="choices"><button class="cbtn" onclick="pickOk(this,'t_color','Non')">✅ Non</button><button class="cbtn" onclick="pickWarn(this,'t_color','Oui')">⚠️ Oui</button></div>
+    <input type="hidden" id="t_color"></div>
+  <div class="card"><div class="flabel">BHA / BHT ?</div>
+    <div class="choices"><button class="cbtn" onclick="pickOk(this,'t_bha','Non')">✅ Non</button><button class="cbtn" onclick="pickDanger(this,'t_bha','Oui')">⚠️ Oui</button></div>
+    <input type="hidden" id="t_bha"></div>
+  <div class="card"><div class="flabel">Propylène glycol ?</div>
+    <div class="choices"><button class="cbtn" onclick="pickOk(this,'t_pg','Non')">✅ Non</button><button class="cbtn" onclick="pickDanger(this,'t_pg','Oui')">🚫 Oui</button></div>
+    <input type="hidden" id="t_pg"></div>
+  <div class="card"><div class="flabel">Liste d'ingrédients courte ? <span style="font-size:10px;color:var(--text2)">(< 10 ingrédients)</span></div>
+    <div class="choices"><button class="cbtn" onclick="pickOk(this,'t_short_list','Oui')">✅ Oui</button><button class="cbtn" onclick="pickWarn(this,'t_short_list','Partiel')">🟡 Partiel</button><button class="cbtn" onclick="pickDanger(this,'t_short_list','Non')">❌ Non</button></div>
+    <input type="hidden" id="t_short_list"></div>
+  <div class="danger-alert"><div class="da-title">🚨 SUBSTANCES TOXIQUES — Score forcé à 0</div><p>Raisins, chocolat, oignons/ail, xylitol ou propylène glycol</p></div>
+  <div class="card" style="border-color:rgba(239,68,68,.35)"><div class="flabel" style="color:var(--red)">🍇 Raisins / 🍫 Chocolat / 🧅 Oignons-Ail ?</div>
+    <div class="choices"><button class="cbtn" onclick="pickOk(this,'t_toxiques','Non')">✅ Non</button><button class="cbtn" onclick="pickDanger(this,'t_toxiques','Oui')">🚫 OUI</button></div>
+    <input type="hidden" id="t_toxiques"></div>
+  <div class="card" style="border-color:rgba(239,68,68,.35)"><div class="flabel" style="color:var(--red)">⚠️ Xylitol ?</div>
+    <div class="choices"><button class="cbtn" onclick="pickOk(this,'t_xylitol','Non')">✅ Non</button><button class="cbtn" onclick="pickDanger(this,'t_xylitol','Oui')">🚫 OUI — DANGER MORTEL</button></div>
+    <input type="hidden" id="t_xylitol"></div>
+</div>
+<div class="step" id="stepT5">
+  <div class="step-head"><div class="step-ico treat">🏆</div><div><div class="step-ttl">Score Friandise</div><div class="step-sub">Résultat + sources des données</div></div></div>
+  <div id="treatScorePage"></div>
+</div>
+</div><!-- /treatMode -->
+</div><!-- /app -->
+
+<div class="nav-bar" id="navBar">
+  <button class="btn-prev" id="btnPrev" onclick="go(-1)" style="display:none">←</button>
+  <button class="btn-next" id="btnNext" onclick="go(1)">Suivant →</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+// ÉTAT GLOBAL
+// ══════════════════════════════════════════
+let SCRIPT_URL = localStorage.getItem('yuka_script_url') || '';
+let mode = 'food', currentStep = 1;
+// Tracking source par champ : 'opff' | 'manual' | 'fediaf'
+let FIELD_SRC = {};  // ex: {f_prot_pct:'opff', f_lip_pct:'manual', ...}
+let OPFF_DATA = {};  // données brutes OPFF chargées
+let LFR = null, LTR = null;
+
+const FOOD_TOTAL = 8, TREAT_TOTAL = 5;
+const FOOD_LABELS = ['Code Barre','Identification','Composition','Acides Gras','Minéraux','Oligo & Vitamines','Ingrédients','Résultat'];
+const TREAT_LABELS = ['Code Barre','Identification','Composition & Ration','Qualité & Toxiques','Résultat'];
+
+if (SCRIPT_URL) { document.getElementById('scriptUrl').value = SCRIPT_URL; testConn(SCRIPT_URL); }
+document.addEventListener('DOMContentLoaded', () => { buildDots(); updateOmega(); });
+
+function saveUrl() { const u = document.getElementById('scriptUrl').value.trim(); if (!u.startsWith('https://script.google.com')) { showToast('❌ URL invalide','err'); return; } SCRIPT_URL = u; localStorage.setItem('yuka_script_url', u); testConn(u); }
+async function testConn(url) { const d = document.getElementById('dotStatus'), t = document.getElementById('statusText'); d.className = 'dot-s loading'; t.textContent = 'Test…'; try { await fetch(url, {method:'GET', mode:'no-cors'}); d.className = 'dot-s ok'; t.textContent = '✅ Connecté à Google Sheets'; showToast('✅ Connecté !','ok'); } catch(e) { d.className = 'dot-s err'; t.textContent = '❌ Connexion impossible'; } }
+
+// ══════════════════════════════════════════
+// MOYENNES FEDIAF 2024
+// ══════════════════════════════════════════
+const FEDIAF = { prot:65, lip:30, fibres:2.5, la:4.5, ala:0.30, epadha:0.25, ca:1.5, p:1.0, k:1.5, na:280, mg:90, zn:23, fe:13, cu:2.6, se:90, iode:385, vita:975, vitd:3.3, vite:21 };
+const FIELD_WEIGHTS = { prot:3, lip:3, hum:3, ca:3, p:3, fibres:2, la:2, ala:2, zn:2, fe:2, vitd:2, epadha:1, k:1, na:1, mg:1, cu:1, se:1, iode:1, vita:1, vite:1 };
+const FIELD_NAMES = { prot:'Protéines', lip:'Lipides', hum:'Humidité', fibres:'Fibres', ca:'Calcium', p:'Phosphore', la:'LA Ω-6', ala:'ALA Ω-3', epadha:'EPA+DHA', zn:'Zinc', fe:'Fer', cu:'Cuivre', se:'Sélénium', iode:'Iode', vita:'Vit. A', vitd:'Vit. D3', vite:'Vit. E', k:'Potassium', na:'Sodium', mg:'Magnésium' };
+const TOTAL_WEIGHT = Object.values(FIELD_WEIGHTS).reduce((a,b)=>a+b,0);
+
+// ══════════════════════════════════════════
+// OPEN PET FOOD FACTS API
+// ══════════════════════════════════════════
+function onBarcodeType(v) { document.getElementById('btnLookup').disabled = v.trim().length < 8; resetLookupState(); }
+function onBarcodeTypeT(v) { document.getElementById('btnLookupT').disabled = v.trim().length < 8; resetLookupStateT(); }
+
+function resetLookupState() { ['lookupLoading','productFound','notFound'].forEach(id => { const el = document.getElementById(id); el.classList.remove('show'); el.style.display = ''; }); }
+function resetLookupStateT() { ['lookupLoadingT','productFoundT','notFoundT'].forEach(id => { const el = document.getElementById(id); el.classList.remove('show'); el.style.display = ''; }); }
+
+async function fetchOPFF(barcode) {
+  const res = await fetch(`https://world.openpetfoodfacts.org/api/v2/product/${barcode}.json?fields=product_name,brands,image_url,nutriments,ingredients_text,categories_tags`);
+  const data = await res.json();
+  if (data.status !== 1) return null;
+  return data.product;
+}
+
+function parseOPFF(product) {
+  const n = product.nutriments || {};
+  const parsed = {
+    nom:      product.product_name || '',
+    marque:   product.brands || '',
+    image:    product.image_url || '',
+    ingredients: product.ingredients_text || '',
+    prot:   n['proteins_100g']     != null ? +n['proteins_100g']     : null,
+    lip:    n['fat_100g']          != null ? +n['fat_100g']           : null,
+    fibres: n['fiber_100g']        != null ? +n['fiber_100g']         : null,
+    hum:    n['moisture_100g']     != null ? +n['moisture_100g']      : null,
+    cendres:n['ash_100g']          != null ? +n['ash_100g']           : null,
+    em:     n['energy-kcal_100g']  != null ? +n['energy-kcal_100g']   : null,
+    ca:     n['calcium_100g']      != null ? +n['calcium_100g'] * 100 : null,  // g/100g -> %
+    p:      n['phosphorus_100g']   != null ? +n['phosphorus_100g']* 100: null,
+    na:     n['sodium_100g']       != null ? +n['sodium_100g']   * 100 : null,
+    la:     n['linoleic-acid_100g']!= null ? +n['linoleic-acid_100g'] : null,
+  };
+  return parsed;
+}
+
+function showProductCard(product, parsed, isFood) {
+  const sfx = isFood ? '' : 'T';
+  // image
+  if (parsed.image) { const img = document.getElementById('pfImg'+sfx); img.src = parsed.image; img.style.display = 'block'; document.getElementById('pfImgPh'+sfx).style.display = 'none'; }
+  document.getElementById('pfName'+sfx).textContent = parsed.nom || 'Nom inconnu';
+  document.getElementById('pfBrand'+sfx).textContent = parsed.marque || '';
+  // Grille des données disponibles
+  const fields = [
+    {k:'prot', l:'Protéines', u:'%'}, {k:'lip', l:'Graisses', u:'%'},
+    {k:'fibres', l:'Fibres', u:'%'}, {k:'hum', l:'Humidité', u:'%'},
+    {k:'ca', l:'Calcium', u:'%'}, {k:'em', l:'Énergie', u:'kcal/100g'}
+  ];
+  const grid = document.getElementById('pfGrid'+sfx);
+  grid.innerHTML = fields.map(f => {
+    const v = parsed[f.k];
+    return v != null
+      ? `<div class="pf-cell"><div class="pc-v">${+v.toFixed(2)}</div><div class="pc-l">${f.l} ${f.u}</div></div>`
+      : `<div class="pf-cell"><div class="pc-v missing">—</div><div class="pc-l">${f.l}</div></div>`;
+  }).join('');
+  // Comptage
+  const dataKeys = ['prot','lip','fibres','hum','cendres','em','ca','p','na','la'];
+  const found = dataKeys.filter(k => parsed[k] != null).length;
+  const missing = dataKeys.length - found;
+  const comp = document.getElementById('pfCompleteness'+sfx);
+  comp.innerHTML = `<span class="nb-opff">🟢 ${found} données disponibles</span>${missing > 0 ? ` · <span class="nb-missing">⚠️ ${missing} champ${missing>1?'s':''} manquant${missing>1?'s':''} → à compléter manuellement</span>` : ' · ✅ Données complètes'}`;
+  document.getElementById('productFound'+sfx).classList.add('show');
+}
+
+async function lookupBarcode() {
+  const bc = document.getElementById('barcodeInput').value.trim();
+  if (!bc) return;
+  resetLookupState();
+  const loading = document.getElementById('lookupLoading');
+  loading.classList.add('show');
+  try {
+    const product = await fetchOPFF(bc);
+    loading.classList.remove('show');
+    if (!product) { document.getElementById('notFound').classList.add('show'); OPFF_DATA = {}; return; }
+    OPFF_DATA = parseOPFF(product);
+    OPFF_DATA.barcode = bc;
+    showProductCard(product, OPFF_DATA, true);
+    showToast('🟢 Produit trouvé !','opff');
+  } catch(e) { loading.classList.remove('show'); document.getElementById('notFound').classList.add('show'); }
+}
+async function lookupBarcodeT() {
+  const bc = document.getElementById('barcodeInputT').value.trim();
+  if (!bc) return;
+  resetLookupStateT();
+  const loading = document.getElementById('lookupLoadingT');
+  loading.classList.add('show');
+  try {
+    const product = await fetchOPFF(bc);
+    loading.classList.remove('show');
+    if (!product) { document.getElementById('notFoundT').classList.add('show'); OPFF_DATA = {}; return; }
+    OPFF_DATA = parseOPFF(product);
+    OPFF_DATA.barcode = bc;
+    showProductCard(product, OPFF_DATA, false);
+    showToast('🟢 Produit trouvé !','opff');
+  } catch(e) { loading.classList.remove('show'); document.getElementById('notFoundT').classList.add('show'); }
+}
+
+function fillFromOPFF(fieldMap) {
+  // fieldMap : { inputId: opffKey, ... }
+  for (const [inputId, opffKey] of Object.entries(fieldMap)) {
+    const val = OPFF_DATA[opffKey];
+    const inp = document.getElementById(inputId);
+    if (!inp) continue;
+    if (val != null && val !== '') {
+      inp.value = val;
+      inp.classList.add('src-opff');
+      FIELD_SRC[inputId] = 'opff';
+      // badge label correspondant
+      const labelBadgeId = 'src' + inputId.replace('f_','').replace('t_','').replace(/_pct/,'').replace(/_mgkg/,'').replace(/_uikg/,'').replace(/_declared/,'Em').replace('_','');
+    } else {
+      FIELD_SRC[inputId] = 'fediaf'; // sera marqué FEDIAF si pas rempli manuellement
+    }
+  }
+}
+
+function setSrcBadge(badgeId, src) {
+  const el = document.getElementById(badgeId);
+  if (!el) return;
+  el.style.display = 'inline-flex';
+  if (src === 'opff') { el.className = 'src-badge src-opff'; el.textContent = '🟢 OPFF'; }
+  else if (src === 'manual') { el.className = 'src-badge src-manual'; el.textContent = '🔵 Manuel'; }
+  else { el.className = 'src-badge src-fediaf'; el.textContent = '🟡 FEDIAF'; }
+}
+
+function confirmOPFF() {
+  // Remplir champs aliment
+  const map = {
+    'f_nom'      : 'nom',  'f_marque'   : 'marque',
+    'f_prot_pct' : 'prot', 'f_lip_pct'  : 'lip',
+    'f_fibres_pct':'fibres','f_hum_pct' : 'hum',
+    'f_cendres_pct':'cendres','f_em_declared':'em',
+    'f_ca_pct'   : 'ca',   'f_p_pct'    : 'p',
+    'f_na_pct'   : 'na',   'f_la_pct'   : 'la',
+    'f_code'     : 'barcode'
+  };
+  for (const [inputId, key] of Object.entries(map)) {
+    const v = OPFF_DATA[key]; const inp = document.getElementById(inputId);
+    if (!inp) continue;
+    if (v != null && v !== '') { inp.value = v; inp.classList.add('src-opff'); FIELD_SRC[inputId] = 'opff'; }
+    else { FIELD_SRC[inputId] = 'fediaf'; }
+  }
+  // Ingrédients
+  if (OPFF_DATA.ingredients) {
+    document.getElementById('opffIngredCard').style.display = 'block';
+    document.getElementById('opffIngredText').textContent = OPFF_DATA.ingredients.substring(0,300) + (OPFF_DATA.ingredients.length > 300 ? '…' : '');
+  }
+  liveConvert(); liveCapRatio();
+  // Badges visibles pour les champs pré-remplis
+  updateAllSrcBadges();
+  go(1);
+  showToast(`🟢 ${Object.values(FIELD_SRC).filter(s=>s==='opff').length} champs remplis depuis OPFF`,'opff');
+}
+function confirmOPFFT() {
+  const map = { 't_nom':'nom', 't_marque':'marque', 't_prot_pct':'prot', 't_lip_pct':'lip', 't_fibres_pct':'fibres', 't_hum_pct':'hum' };
+  for (const [inputId, key] of Object.entries(map)) {
+    const v = OPFF_DATA[key]; const inp = document.getElementById(inputId);
+    if (!inp) continue;
+    if (v != null && v !== '') { inp.value = v; inp.classList.add('src-opff'); FIELD_SRC[inputId] = 'opff'; }
+    else { FIELD_SRC[inputId] = 'fediaf'; }
+  }
+  if (OPFF_DATA.ingredients) { document.getElementById('opffIngredCardT').style.display = 'block'; document.getElementById('opffIngredTextT').textContent = OPFF_DATA.ingredients.substring(0,300) + (OPFF_DATA.ingredients.length > 300 ? '…' : ''); }
+  liveTreat(); go(1);
+  showToast(`🟢 ${Object.values(FIELD_SRC).filter(s=>s==='opff').length} champs remplis depuis OPFF`,'opff');
+}
+
+function goManual() { OPFF_DATA = {}; FIELD_SRC = {}; go(1); }
+function goManualT() { OPFF_DATA = {}; FIELD_SRC = {}; go(1); }
+
+// Met à jour les badges src sur tous les champs une fois les données chargées
+function updateAllSrcBadges() {
+  const pairs = [
+    ['f_nom','srcNom'],['f_marque','srcMarque'],['f_prot_pct','srcProt'],
+    ['f_lip_pct','srcLip'],['f_fibres_pct','srcFib'],['f_hum_pct','srcHum'],
+    ['f_cendres_pct','srcCen'],['f_em_declared','srcEm'],['f_ca_pct','srcCa'],
+    ['f_p_pct','srcP'],['f_la_pct','srcLA'],['f_ala_pct','srcALA'],['f_epadha_pct','srcEPA']
+  ];
+  for (const [fId, bId] of pairs) {
+    const src = FIELD_SRC[fId];
+    if (src) setSrcBadge(bId, src);
+  }
+}
+
+// Marque un champ comme "manuel" quand l'utilisateur le modifie
+function markManualNum(inputId, badgeId, cardId) {
+  const inp = document.getElementById(inputId);
+  if (inp && inp.value !== '') {
+    const prev = FIELD_SRC[inputId];
+    if (prev === 'opff') { inp.classList.remove('src-opff'); inp.classList.add('src-manual'); }
+    FIELD_SRC[inputId] = 'manual';
+    setSrcBadge(badgeId, 'manual');
+  } else {
+    FIELD_SRC[inputId] = 'fediaf';
+    if (badgeId) { const el = document.getElementById(badgeId); if (el) el.style.display = 'none'; }
+  }
+}
+function markManualText(inputId, badgeId) {
+  const inp = document.getElementById(inputId);
+  if (inp && inp.value.trim() !== '') { FIELD_SRC[inputId] = FIELD_SRC[inputId] === 'opff' ? 'opff' : 'manual'; setSrcBadge(badgeId, FIELD_SRC[inputId]); }
+  else { FIELD_SRC[inputId] = 'fediaf'; const el = document.getElementById(badgeId); if (el) el.style.display = 'none'; }
+}
+
+// ══════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════
+function switchMode(m) {
+  mode = m; currentStep = 1;
+  document.getElementById('foodMode').style.display = m === 'food' ? 'block' : 'none';
+  document.getElementById('treatMode').style.display = m === 'treat' ? 'block' : 'none';
+  document.getElementById('tabFood').className = 'mode-tab' + (m === 'food' ? ' active-food' : '');
+  document.getElementById('tabTreat').className = 'mode-tab' + (m === 'treat' ? ' active-treat' : '');
+  document.getElementById('navBar').style.display = 'flex';
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById(m === 'food' ? 'stepF1' : 'stepT1').classList.add('active');
+  OPFF_DATA = {}; FIELD_SRC = {};
+  buildDots(); updateProgress(); updateNav();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function buildDots() {
+  const total = mode === 'food' ? FOOD_TOTAL : TREAT_TOTAL, wrap = document.getElementById('stepDots');
+  wrap.innerHTML = '';
+  for (let i = 1; i <= total; i++) { const d = document.createElement('div'); d.className = 'sdot' + (i === 1 ? (mode === 'food' ? ' active' : ' active-t') : ''); d.id = 'sd' + i; wrap.appendChild(d); }
+}
+
+function go(dir) {
+  const total = mode === 'food' ? FOOD_TOTAL : TREAT_TOTAL, px = mode === 'food' ? 'stepF' : 'stepT';
+  // Validation step 2 (identification)
+  if (dir === 1 && currentStep === 2) {
+    const nomId = mode === 'food' ? 'f_nom' : 't_nom', typeId = mode === 'food' ? 'f_type' : 't_type';
+    if (!document.getElementById(nomId).value.trim()) { shake(document.getElementById(nomId)); showToast('⚠️ Le nom est requis','err'); return; }
+    if (!document.getElementById(typeId).value) { showToast('⚠️ Choisis le type','err'); return; }
+  }
+  document.getElementById(px + currentStep).classList.remove('active');
+  currentStep = Math.max(1, Math.min(total, currentStep + dir));
+  document.getElementById(px + currentStep).classList.add('active');
+  updateProgress(); updateDots(); updateNav();
+  if (currentStep === total) { document.getElementById('navBar').style.display = 'none'; mode === 'food' ? renderFoodScore() : renderTreatScore(); }
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function updateProgress() { const total = mode === 'food' ? FOOD_TOTAL : TREAT_TOTAL, labels = mode === 'food' ? FOOD_LABELS : TREAT_LABELS; document.getElementById('progBar').style.width = (currentStep/total*100)+'%'; document.getElementById('progBar').className = 'prog-bar' + (mode === 'treat' ? ' tm' : ''); document.getElementById('progLabel').textContent = labels[currentStep-1]; document.getElementById('progFrac').textContent = currentStep+' / '+total; document.getElementById('progFrac').className = 'prog-frac' + (mode === 'treat' ? ' tm' : ''); }
+function updateDots() { const total = mode === 'food' ? FOOD_TOTAL : TREAT_TOTAL; for (let i = 1; i <= total; i++) { const d = document.getElementById('sd'+i); if (!d) continue; d.className = 'sdot'; if (i < currentStep) d.classList.add(mode === 'food' ? 'done' : 'done-t'); else if (i === currentStep) d.classList.add(mode === 'food' ? 'active' : 'active-t'); } }
+function updateNav() { const total = mode === 'food' ? FOOD_TOTAL : TREAT_TOTAL; document.getElementById('btnPrev').style.display = currentStep > 1 ? 'flex' : 'none'; const nb = document.getElementById('btnNext'); nb.className = 'btn-next' + (mode === 'treat' ? ' tm' : ''); nb.textContent = currentStep === total - 1 ? '🏆 Calculer le score' : 'Suivant →'; }
+function shake(el) { el.style.borderColor = 'var(--red)'; el.animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:300}); setTimeout(()=>el.style.borderColor='',1500); }
+
+function clearC(btn) { btn.closest('.choices').querySelectorAll('.cbtn').forEach(b => b.className = 'cbtn'); }
+function pick(btn,id,val){clearC(btn);btn.classList.add('sel');document.getElementById(id).value=val}
+function pickOk(btn,id,val){clearC(btn);btn.classList.add('sel-ok');document.getElementById(id).value=val}
+function pickDanger(btn,id,val){clearC(btn);btn.classList.add('sel-danger');document.getElementById(id).value=val}
+function pickWarn(btn,id,val){clearC(btn);btn.classList.add('sel-warn');document.getElementById(id).value=val}
+function pickPurple(btn,id,val){clearC(btn);btn.classList.add('sel-purple');document.getElementById(id).value=val}
+
+// ══════════════════════════════════════════
+// CALCULS
+// ══════════════════════════════════════════
+const gn = id => { const v = document.getElementById(id)?.value; return (v !== '' && v != null) ? parseFloat(v) : null; };
+const gs = id => document.getElementById(id)?.value?.trim() || '';
+function calcEM(p,l,f,h,c){if(p===null||l===null)return null;const hh=h??10,aa=c??7,ff=f??2,g=Math.max(0,100-p-l-ff-hh-aa);return(p*3.5)+(l*8.5)+(g*3.5);}
+function to1000(v,em){if(v===null||em===null||em<=0)return null;return(v/em)*1000;}
+function toMg1000(v,em){if(v===null||em===null||em<=0)return null;return(v*10/em)*1000;}
+function mgkgTo1000(v,em){if(v===null||em===null||em<=0)return null;return(v/10/em)*1000;}
+
+let CV = {};
+
+function getFieldSrc(fieldKey) {
+  // Détermine source réelle pour scoring
+  const map = { prot:'f_prot_pct', lip:'f_lip_pct', hum:'f_hum_pct', fibres:'f_fibres_pct',
+    la:'f_la_pct', ala:'f_ala_pct', epadha:'f_epadha_pct', ca:'f_ca_pct', p:'f_p_pct',
+    k:'f_k_pct', na:'f_na_pct', mg:'f_mg_pct', zn:'f_zn_mgkg', fe:'f_fe_mgkg',
+    cu:'f_cu_mgkg', se:'f_se_mgkg', iode:'f_iode_mgkg', vita:'f_vita_uikg', vitd:'f_vitd_uikg', vite:'f_vite_mgkg' };
+  const inputId = map[fieldKey];
+  const val = inputId ? gn(inputId) : null;
+  if (val !== null) return FIELD_SRC[inputId] || 'manual';
+  return 'fediaf';
+}
+
+function liveConvert() {
+  const p=gn('f_prot_pct'),l=gn('f_lip_pct'),f=gn('f_fibres_pct'),h=gn('f_hum_pct'),c=gn('f_cendres_pct'),ed=gn('f_em_declared');
+  const ec=calcEM(p,l,f,h,c),em=ed??ec;
+  if(em){const ms=h!=null?em/(1-h/100):null;document.getElementById('ev_kcal100').textContent=Math.round(em);document.getElementById('ev_kcalkg').textContent=ms?Math.round(ms):'—';document.getElementById('energySource').textContent=ed?'📋 Valeur déclarée':'🧮 Formule Atwater (FEDIAF)';}
+  else{document.getElementById('ev_kcal100').textContent='—';document.getElementById('ev_kcalkg').textContent='—';document.getElementById('energySource').textContent='Remplis les % pour voir l\'énergie';}
+  function cvt(v,key){const c=to1000(v,em);if(c!==null)return c;return FEDIAF[key];}
+  function cvtMg(v,key){const c=toMg1000(v,em);if(c!==null)return c;return FEDIAF[key];}
+  function cvtMgkg(v,mult=1){const c=v?mgkgTo1000(v*mult,em):null;return c!==null?c:null;}
+  CV = {
+    em_100g:em, em_kgMS:em&&h!=null?em/(1-h/100):em?em/0.9:null,
+    prot  : p!==null&&em?to1000(p,em):FEDIAF.prot,
+    lip   : l!==null&&em?to1000(l,em):FEDIAF.lip,
+    fibres: f!==null?f:FEDIAF.fibres, hum:h,
+    glu   : em?Math.max(0,100-(p??0)-(l??0)-(f??2)-(h??10)-(c??7)):null,
+    la    : cvt(gn('f_la_pct'),'la'), ala:cvt(gn('f_ala_pct'),'ala'), epadha:cvt(gn('f_epadha_pct'),'epadha'),
+    ca    : cvt(gn('f_ca_pct'),'ca'), p:cvt(gn('f_p_pct'),'p'),
+    k     : cvt(gn('f_k_pct'),'k'),  na:cvtMg(gn('f_na_pct'),'na'), mg:cvtMg(gn('f_mg_pct'),'mg'),
+    zn    : cvtMgkg(gn('f_zn_mgkg'))||FEDIAF.zn,
+    fe    : cvtMgkg(gn('f_fe_mgkg'))||FEDIAF.fe,
+    cu    : cvtMgkg(gn('f_cu_mgkg'))||FEDIAF.cu,
+    se    : cvtMgkg(gn('f_se_mgkg'),1000)||FEDIAF.se,
+    iode  : cvtMgkg(gn('f_iode_mgkg'),1000)||FEDIAF.iode,
+    vita  : gn('f_vita_uikg')?mgkgTo1000(gn('f_vita_uikg')*0.3,em)||FEDIAF.vita:FEDIAF.vita,
+    vitd  : gn('f_vitd_uikg')?mgkgTo1000(gn('f_vitd_uikg')*0.025,em)||FEDIAF.vitd:FEDIAF.vitd,
+    vite  : cvtMgkg(gn('f_vite_mgkg'))||FEDIAF.vite,
+  };
+}
+
+function liveCapRatio() {
+  liveConvert();
+  const ca=gn('f_ca_pct'),p2=gn('f_p_pct'),em=CV.em_100g;
+  const caC=ca&&em?to1000(ca,em):null,pC=p2&&em?to1000(p2,em):null;
+  const disp=document.getElementById('capDisplay'),stat=document.getElementById('capStatus');
+  if(caC&&pC&&pC>0){const r=caC/pC;disp.textContent=r.toFixed(2)+' : 1';if(r>=1.2&&r<=1.8){disp.style.color='var(--green)';stat.style.color='var(--green)';stat.textContent='✅ Excellent (1,2–1,8)';}else if(r>=1.0&&r<=2.0){disp.style.color='var(--yellow)';stat.style.color='var(--yellow)';stat.textContent='🟡 Acceptable';}else if(r<0.6||r>3.0){disp.style.color='var(--red)';stat.style.color='var(--red)';stat.textContent='🚨 DANGER !';}else{disp.style.color='var(--accent2)';stat.style.color='var(--accent2)';stat.textContent='⚠️ Hors plage';}}
+  else{disp.textContent='— : 1';disp.style.color='var(--text2)';stat.textContent='Entrez Ca et P';stat.style.color='var(--text2)';}
+}
+function updateOmega(){const v=parseFloat(document.getElementById('f_omega').value),el=document.getElementById('omegaVal');el.textContent=v.toFixed(1)+' : 1';el.style.color=v>=4&&v<=10?'var(--green)':v<=15?'var(--yellow)':'var(--red)';const la=gn('f_la_pct'),ala=gn('f_ala_pct');if(la&&ala&&ala>0){const a=la/ala;document.getElementById('f_omega').value=Math.min(20,Math.round(a*2)/2);el.textContent=a.toFixed(1)+' : 1';el.style.color=a>=4&&a<=10?'var(--green)':a<=15?'var(--yellow)':'var(--red)';}}
+function liveTreat(){liveRation(calcEM(gn('t_prot_pct'),gn('t_lip_pct'),gn('t_fibres_pct'),gn('t_hum_pct'),null));}
+function liveRation(em_ov){const poids=gn('t_poids_chien'),rg=gn('t_ration_g'),em=em_ov??calcEM(gn('t_prot_pct'),gn('t_lip_pct'),gn('t_fibres_pct'),gn('t_hum_pct'),null);const pe=document.getElementById('rationPct'),al=document.getElementById('rationAlert');if(!poids||!rg){pe.textContent='— %';pe.style.color='var(--text2)';al.style.display='none';return;}const mer=95*Math.pow(poids,0.75),kf=(rg*(em??350)/100),pct=(kf/mer)*100;pe.textContent=pct.toFixed(1)+' %';al.style.display='block';if(pct<=10){pe.style.color='var(--green)';al.className='ration-alert ok';al.textContent='✅ '+pct.toFixed(1)+' % — Dans la limite WSAVA (max 10 %)';}else if(pct<=15){pe.style.color='var(--yellow)';al.className='ration-alert warn';al.textContent='⚠️ '+pct.toFixed(1)+' % — Max recommandé : '+Math.round(rg*10/pct)+' g/j';}else{pe.style.color='var(--red)';al.className='ration-alert bad';al.textContent='🚨 '+pct.toFixed(1)+' % — Trop élevé ! Max : '+Math.round(rg*10/pct)+' g/j';}}
+
+// ══════════════════════════════════════════
+// SCORE
+// ══════════════════════════════════════════
+function sV(v,mn,ra,op,mx,pts){if(v===null||isNaN(v))return 0;if(v<mn||v>mx)return 0;if(v>=ra&&v<=op)return pts;if(v<ra)return((v-mn)/(ra-mn))*pts;return(1-(v-op)/(mx-op))*pts;}
+
+function buildSourcesSummary() {
+  // Construit le récap des 3 sources pour tous les champs nutritionnels
+  const opffFields=[], manualFields=[], fediafFields=[];
+  let opffW=0, manualW=0, fediafW=0, totalW=0;
+  for (const [key, w] of Object.entries(FIELD_WEIGHTS)) {
+    totalW += w;
+    const src = getFieldSrc(key);
+    const label = FIELD_NAMES[key] || key;
+    if (src === 'opff') { opffFields.push(label); opffW += w; }
+    else if (src === 'manual') { manualFields.push(label); manualW += w; }
+    else { fediafFields.push(label); fediafW += w; }
+  }
+  const realPct = Math.round((opffW + manualW) / totalW * 100);
+  const opffPct = Math.round(opffW / totalW * 100);
+  const manPct = Math.round(manualW / totalW * 100);
+  const fedPct = Math.round(fediafW / totalW * 100);
+  return { opffFields, manualFields, fediafFields, realPct, opffPct, manPct, fedPct };
+}
+
+function renderSourcesBlock(ss, isTreat=false) {
+  const pctClass = ss.realPct >= 75 ? 'high' : ss.realPct >= 50 ? 'med' : 'low';
+  const tags = arr => arr.map(f=>`<span class="sr-field-tag">${f}</span>`).join('');
+  const hasOpff = ss.opffFields.length > 0;
+  return `
+  <div class="sources-recap">
+    <div class="sr-header">
+      <div class="sr-title">📊 Origine des données</div>
+      <div class="fiability-pct ${pctClass}">${ss.realPct}% réel</div>
+    </div>
+    <div class="sr-bar-wrap">
+      <div class="sr-bar-opff"  style="width:${ss.opffPct}%"></div>
+      <div class="sr-bar-manual"style="width:${ss.manPct}%"></div>
+      <div class="sr-bar-fediaf"style="width:${ss.fedPct}%"></div>
+    </div>
+    <div class="sr-body">
+      ${hasOpff ? `
+      <div class="sr-row">
+        <div class="sr-dot opff"></div>
+        <div class="sr-content">
+          <div class="sr-row-title opff">🟢 Open Pet Food Facts (${ss.opffPct}%)</div>
+          <div class="sr-fields">${tags(ss.opffFields)}</div>
+          <div class="sr-count">${ss.opffFields.length} donnée${ss.opffFields.length>1?'s':''} extraite${ss.opffFields.length>1?'s':''} automatiquement</div>
+        </div>
+      </div>` : ''}
+      ${ss.manualFields.length > 0 ? `
+      <div class="sr-row">
+        <div class="sr-dot manual"></div>
+        <div class="sr-content">
+          <div class="sr-row-title manual">🔵 Saisie manuelle (${ss.manPct}%)</div>
+          <div class="sr-fields">${tags(ss.manualFields)}</div>
+          <div class="sr-count">${ss.manualFields.length} champ${ss.manualFields.length>1?'s':''} saisi${ss.manualFields.length>1?'s':''} à partir de l'étiquette</div>
+        </div>
+      </div>` : ''}
+      ${ss.fediafFields.length > 0 ? `
+      <div class="sr-row">
+        <div class="sr-dot fediaf"></div>
+        <div class="sr-content">
+          <div class="sr-row-title fediaf">🟡 Estimation FEDIAF 2024 (${ss.fedPct}%)</div>
+          <div class="sr-fields">${tags(ss.fediafFields)}</div>
+          <div class="sr-count">${ss.fediafFields.length} champ${ss.fediafFields.length>1?'s':''} non renseigné${ss.fediafFields.length>1?'s':''} → moyenne des aliments commerciaux</div>
+        </div>
+      </div>` : ''}
+    </div>
+    ${ss.fediafFields.length > 0 ? `<div class="sr-note"><strong>💡 FEDIAF :</strong> Les données manquantes utilisent la moyenne des ${ss.fediafFields.length} nutriment${ss.fediafFields.length>1?'s':''} non trouvés. Pour un score 100% fiable, cherche ces valeurs dans les "Additifs nutritionnels" de l'étiquette.</div>` : `<div class="sr-note" style="color:var(--green);background:rgba(34,197,94,.05);border-color:rgba(34,197,94,.2)">✅ Score basé à 100% sur des données réelles — résultat entièrement fiable.</div>`}
+  </div>`;
+}
+
+function computeFoodScore() {
+  liveConvert(); const cv = CV;
+  const realCa = gn('f_ca_pct') !== null, realP = gn('f_p_pct') !== null, realVitD = gn('f_vitd_uikg') !== null;
+  if (gs('f_toxiques')==='Oui'||gs('f_pg')==='Oui') return {total:0,disqualified:true,disq_reason:'Substance(s) toxique(s)'};
+  if (realCa&&realP&&cv.p>0){const r=cv.ca/cv.p;if(r<0.6||r>3.0)return{total:0,disqualified:true,disq_reason:'Ratio Ca:P = '+r.toFixed(2)+' dangereux'};}
+  if (realVitD&&cv.vitd>20) return {total:0,disqualified:true,disq_reason:'Vit D = '+cv.vitd.toFixed(1)+' µg/1000kcal — MAX dépassé'};
+  const src=gs('f_src_prot').toLowerCase();
+  const srcQ=src.includes('frais')?7:src.includes('farine')?6:src.includes('sous-produit')?3:src?4:0;
+  const sc_prot=sV(cv.prot,20,25,50,90,8)+srcQ;
+  const sc_lip=sV(cv.lip,13.8,20,40,82.5,8);
+  const om=parseFloat(document.getElementById('f_omega').value);
+  const sc_age=sV(cv.la,2.8,3.3,8.0,16.3,3)+sV(cv.ala,0.11,0.20,1.5,3.0,2)+sV(cv.epadha,0.11,0.30,2.0,2.8,3)+(om>=4&&om<=10?2:(om>=3||(om>10&&om<=15))?1:0);
+  const sc_glu=(cv.glu===null?0:cv.glu<=30?3:cv.glu<=40?2:cv.glu<=55?1:0)+sV(cv.fibres,0.5,1.5,4.0,8.0,4);
+  const cap=cv.ca&&cv.p&&cv.p>0?cv.ca/cv.p:null;
+  const sc_min=sV(cv.ca,0.5,1.0,2.5,4.5,4)+sV(cv.p,0.5,0.75,1.5,4.0,3)+(cap===null?0:cap>=1.2&&cap<=1.8?4:cap>=1.0&&cap<=2.0?3:cap>=0.8&&cap<=2.5?1:0)+sV(cv.k,1.0,1.3,3.0,5.0,2)+sV(cv.na,75,200,500,1000,1)+sV(cv.mg,45,100,150,300,1);
+  const sc_oligo=sV(cv.zn,12,15,50,100,3)+sV(cv.fe,5,7.5,40,80,2)+sV(cv.cu,1.0,1.5,7.5,25,2)+sV(cv.se,50,87.5,200,400,2)+sV(cv.iode,150,220,500,1000,1);
+  const sc_vit=sV(cv.vita,200,379,2500,16000,2)+sV(cv.vitd,1.5,3.4,15,20,2)+sV(cv.vite,5,7.5,50,250,2);
+  const pg=gs('f_pos_glu'),srcQ5=src.includes('frais')?5:src.includes('farine')?4:src.includes('sous-produit')?2:src?1:0;
+  const sc_pos=pg==='Absent'?3:pg==='3e-5e'?2:pg==='2e'?1:0;
+  let sc_add=4;if(gs('f_bha')==='Oui')sc_add-=2;if(gs('f_color')==='Oui')sc_add-=1;if(gs('f_sucre')==='Oui')sc_add-=1;sc_add=Math.max(0,sc_add);
+  const anti=gs('f_antioxydant'),sc_anti=anti==='Oui'?3:anti==='Partiel'?1:0;
+  const sc_ingr=srcQ5+sc_pos+sc_add+sc_anti;
+  const ms=cv.em_kgMS,type=gs('f_type');let sc_en=3;
+  if(ms){if(type==='Sec')sc_en=ms>=3200&&ms<=4200?5:ms>=2800&&ms<=4600?3:1;else sc_en=cv.em_100g>=800&&cv.em_100g<=1500?5:cv.em_100g>=600&&cv.em_100g<=1800?3:1;}
+  const sc_hum=cv.hum!==null?5:3;
+  const total=Math.min(100,Math.round((sc_prot+sc_lip+sc_age+sc_glu+sc_min+sc_oligo+sc_vit+sc_ingr+sc_en+sc_hum)*10)/10);
+  return{total,disqualified:false,converted:{em_100g:cv.em_100g,prot_1000:cv.prot,lip_1000:cv.lip,ca_1000:cv.ca,p_1000:cv.p,cap:cap?.toFixed(2)},
+    breakdown:[{n:'🥩 Protéines',v:sc_prot,m:15},{n:'🧈 Lipides',v:sc_lip,m:8},{n:'🔬 AGE',v:sc_age,m:10},{n:'🌾 Glucides',v:sc_glu,m:7},{n:'🪨 Minéraux',v:sc_min,m:15},{n:'⚗️ Oligo-él.',v:sc_oligo,m:10},{n:'💊 Vitamines',v:sc_vit,m:6},{n:'🥩 Ingrédients',v:sc_ingr,m:15},{n:'⚡ Énergie',v:sc_en,m:5},{n:'💧 Humidité',v:sc_hum,m:5}]};
+}
+
+function computeTreatScore() {
+  if(gs('t_toxiques')==='Oui'||gs('t_pg')==='Oui'||gs('t_xylitol')==='Oui')return{total:0,disqualified:true,disq_reason:'Substance toxique détectée'};
+  const prot=gn('t_prot_pct'),src=gs('t_src_prot').toLowerCase();
+  const sc_p=prot===null?10:prot>=50?20:prot>=35?15:prot>=20?10:5;
+  const srcQ=src.includes('frais')||src.includes('déshydraté')||src.includes('lyophilisé')?10:src.includes('farine')?7:src?4:0;
+  const sc_prot=Math.min(35,sc_p+srcQ+(gs('t_prot_first')==='Oui'?5:0));
+  const lip=gn('t_lip_pct'),fib=gn('t_fibres_pct');
+  const sc_comp=Math.min(20,(lip===null?5:lip<=15?10:lip<=25?7:lip<=35?4:2)+(fib===null?2:fib>=1&&fib<=5?5:3)+(prot!==null?5:0));
+  let sc_add=25;if(gs('t_sucre')==='Oui')sc_add-=8;if(gs('t_bha')==='Oui')sc_add-=8;if(gs('t_color')==='Oui')sc_add-=5;const sl=gs('t_short_list');if(sl==='Non')sc_add-=4;else if(sl==='Partiel')sc_add-=2;sc_add=Math.max(0,sc_add);
+  const poids=gn('t_poids_chien'),rg=gn('t_ration_g');let sc_ration=10;
+  if(poids&&rg){const mer=95*Math.pow(poids,0.75),em=calcEM(gn('t_prot_pct'),gn('t_lip_pct'),gn('t_fibres_pct'),gn('t_hum_pct'),null)??350,pct=((rg*em/100)/mer)*100;sc_ration=pct<=5?20:pct<=10?15:pct<=15?8:pct<=20?4:0;}
+  const total=Math.min(100,Math.round(sc_prot+sc_comp+sc_add+sc_ration));
+  return{total,disqualified:false,breakdown:[{n:'🥩 Protéines',v:sc_prot,m:35,tm:true},{n:'📊 Composition',v:sc_comp,m:20,tm:true},{n:'🚫 Additifs',v:sc_add,m:25,tm:true},{n:'📅 Ration/j',v:sc_ration,m:20,tm:true}]};
+}
+
+function getVerdict(s,treat=false){
+  if(s>=90)return{stars:'⭐⭐⭐⭐⭐',label:treat?'EXCELLENTE':'EXCELLENT',desc:treat?'Friandise de qualité exceptionnelle':'Alimentation de référence',color:'#22c55e'};
+  if(s>=75)return{stars:'⭐⭐⭐⭐',label:treat?'TRÈS BONNE':'TRÈS BON',desc:'Bonne qualité — quelques axes d\'amélioration',color:'#16a34a'};
+  if(s>=60)return{stars:'⭐⭐⭐',label:'CORRECT',desc:'Acceptable — à utiliser avec modération',color:'#eab308'};
+  if(s>=45)return{stars:'⭐⭐',label:'MÉDIOCRE',desc:'Qualité insuffisante — à éviter en usage régulier',color:'#f97316'};
+  if(s>=30)return{stars:'⭐',label:'INSUFFISANT',desc:'Nombreux problèmes identifiés',color:'#ef4444'};
+  return{stars:'—',label:'DANGEREUX',desc:'Ne pas donner — risque pour la santé',color:'#991b1b'};
+}
+
+function ringHTML(rc,isTreat){const C=2*Math.PI*82;return`<div class="score-ring-container"><svg width="200" height="200" viewBox="0 0 200 200"><circle class="ring-bg" cx="100" cy="100" r="82"/><circle class="ring-fill" cx="100" cy="100" r="82" stroke="${rc}" stroke-dasharray="${C}" stroke-dashoffset="${C}" id="ringEl"/></svg><div class="score-center"><div class="score-big${isTreat?' ts':''}" id="scoreNum">0</div><div class="score-pts">/ 100</div></div></div>`;}
+function bkHTML(bd){return bd.map(b=>{const p=b.m>0?b.v/b.m*100:0;return`<div class="bk-item"><div class="bk-name">${b.n}</div><div class="bk-bar-track"><div class="bk-bar-fill${b.tm?' tm':''}" style="width:${p}%"></div></div><div class="bk-vals"><span class="bk-val${b.tm?' tm':''}">${Math.round(b.v*10)/10}</span><span class="bk-max">/ ${b.m}</span></div></div>`;}).join('');}
+function animRing(total){setTimeout(()=>{const r=document.getElementById('ringEl');if(r){const C=2*Math.PI*82;r.style.strokeDashoffset=C*(1-total/100);}},80);let count=0,numEl=document.getElementById('scoreNum'),inc=total/70;const t=setInterval(()=>{count=Math.min(total,count+inc);if(numEl)numEl.textContent=Math.round(count);if(count>=total)clearInterval(t);},18);}
+
+function renderFoodScore() {
+  liveConvert(); const res = computeFoodScore(); LFR = res;
+  const page = document.getElementById('scorePage');
+  window.scrollTo({top:0, behavior:'smooth'});
+  if (res.disqualified) {
+    page.innerHTML = `<div class="disq-banner"><div class="di">🚨</div><h3>SCORE : 0 / 100</h3><p>${res.disq_reason}</p></div>${renderSourcesBlock(buildSourcesSummary())}<div class="send-status" id="sendStatus"></div><button class="btn-send" onclick="sendToSheets('food')">📊 Envoyer vers Google Sheets</button><button class="btn-new" onclick="location.reload()">+ Analyser un autre aliment</button>`;
+    return;
+  }
+  const v = getVerdict(res.total); const rc = res.total>=75?'#22c55e':res.total>=60?'#eab308':res.total>=45?'#f97316':'#ef4444';
+  const cr = res.converted, ss = buildSourcesSummary();
+  const srcColor = f => { const s=getFieldSrc(f); return s==='opff'?'var(--opff)':s==='manual'?'var(--blue)':'var(--yellow)'; };
+  const srcLabel = f => { const s=getFieldSrc(f); return s==='opff'?'🟢 OPFF':s==='manual'?'🔵 Manuel':'🟡 FEDIAF'; };
+  const conv = `<div class="conversion-recap"><div class="cr-title">🔄 Valeurs utilisées / 1000 kcal</div><div class="cr-grid">
+    <div class="cr-item"><div class="ci-label">Énergie</div><div class="ci-val">${cr.em_100g?Math.round(cr.em_100g)+' kcal/100g':'—'}</div></div>
+    <div class="cr-item"><div class="ci-label">Protéines</div><div class="ci-val" style="color:${srcColor('prot')}">${cr.prot_1000?.toFixed(1)} g</div><div class="ci-src" style="color:${srcColor('prot')}">${srcLabel('prot')}</div></div>
+    <div class="cr-item"><div class="ci-label">Lipides</div><div class="ci-val" style="color:${srcColor('lip')}">${cr.lip_1000?.toFixed(1)} g</div><div class="ci-src" style="color:${srcColor('lip')}">${srcLabel('lip')}</div></div>
+    <div class="cr-item"><div class="ci-label">Ratio Ca:P</div><div class="ci-val" style="color:${srcColor('ca')}">${cr.cap??'—'}</div><div class="ci-src" style="color:${srcColor('ca')}">${srcLabel('ca')}</div></div>
+  </div></div>`;
+  page.innerHTML = ringHTML(rc,false) +
+    `<div class="score-verdict"><div class="verdict-stars">${v.stars}</div><div class="verdict-label" style="color:${v.color}">${v.label}</div><div class="verdict-desc">${v.desc}</div></div>` +
+    renderSourcesBlock(ss) + conv +
+    `<div class="breakdown">${bkHTML(res.breakdown)}</div>` +
+    `<div class="send-status" id="sendStatus"></div>
+    <button class="btn-send" id="btnSend" onclick="sendToSheets('food')">📊 Envoyer vers Google Sheets</button>
+    <button class="btn-new" onclick="location.reload()">+ Analyser un autre aliment</button>
+    <button class="btn-switch-mode" onclick="switchMode('treat')">🦴 Analyser une friandise</button>`;
+  animRing(res.total);
+}
+
+function renderTreatScore() {
+  const res = computeTreatScore(); LTR = res;
+  const page = document.getElementById('treatScorePage');
+  window.scrollTo({top:0, behavior:'smooth'});
+  if (res.disqualified) {
+    page.innerHTML = `<div class="disq-banner"><div class="di">🚨</div><h3>SCORE : 0 / 100</h3><p>${res.disq_reason}</p></div><div class="send-status" id="sendStatus"></div><button class="btn-send tm" onclick="sendToSheets('treat')">📊 Envoyer vers Google Sheets</button><button class="btn-new" onclick="location.reload()">+ Analyser une autre friandise</button>`;
+    return;
+  }
+  const v = getVerdict(res.total, true); const rc = res.total>=75?'#a78bfa':res.total>=60?'#eab308':res.total>=45?'#f97316':'#ef4444';
+  const poids=gn('t_poids_chien'),rg=gn('t_ration_g');let rationHTML='';
+  if(poids&&rg){const mer=95*Math.pow(poids,0.75),em=calcEM(gn('t_prot_pct'),gn('t_lip_pct'),gn('t_fibres_pct'),gn('t_hum_pct'),null)??350,pct=((rg*em/100)/mer)*100,col=pct<=10?'var(--green)':pct<=15?'var(--yellow)':'var(--red)';rationHTML=`<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:16px"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--purple);margin-bottom:8px">📅 Apport ration journalière</div><div style="display:flex;justify-content:space-between;align-items:center;background:var(--surface2);border-radius:9px;padding:10px 14px"><span style="font-size:12px;color:var(--text2)">${rg}g/j pour ${poids}kg</span><span style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:${col}">${pct.toFixed(1)}% MER</span></div></div>`;}
+  // Sources pour friandise (plus simples)
+  const tSrc = { opffFields:[], manualFields:[], fediafFields:[], opffPct:0, manPct:0, fedPct:0, realPct:0 };
+  const tFields = [{k:'t_prot_pct',n:'Protéines'},{k:'t_lip_pct',n:'Lipides'},{k:'t_fibres_pct',n:'Fibres'},{k:'t_hum_pct',n:'Humidité'}];
+  tFields.forEach(f => { const v=gn(f.k); const src=v!==null?(FIELD_SRC[f.k]||'manual'):'fediaf'; if(src==='opff')tSrc.opffFields.push(f.n); else if(src==='manual')tSrc.manualFields.push(f.n); else tSrc.fediafFields.push(f.n); });
+  const tot=tFields.length; tSrc.opffPct=Math.round(tSrc.opffFields.length/tot*100); tSrc.manPct=Math.round(tSrc.manualFields.length/tot*100); tSrc.fedPct=Math.round(tSrc.fediafFields.length/tot*100); tSrc.realPct=tSrc.opffPct+tSrc.manPct;
+  page.innerHTML = ringHTML(rc,true) +
+    `<div class="score-verdict"><div class="verdict-stars">${v.stars}</div><div class="verdict-label" style="color:${v.color}">${v.label}</div><div class="verdict-desc">${v.desc}</div></div>` +
+    rationHTML + renderSourcesBlock(tSrc, true) +
+    `<div class="breakdown">${bkHTML(res.breakdown)}</div>` +
+    `<div class="send-status" id="sendStatus"></div>
+    <button class="btn-send tm" id="btnSend" onclick="sendToSheets('treat')">📊 Envoyer vers Google Sheets</button>
+    <button class="btn-new" onclick="location.reload()">+ Analyser une autre friandise</button>
+    <button class="btn-switch-mode" onclick="switchMode('food')">🥣 Analyser un aliment complet</button>`;
+  animRing(res.total);
+}
+
+// ══════════════════════════════════════════
+// ENVOI GOOGLE SHEETS
+// ══════════════════════════════════════════
+async function sendToSheets(type) {
+  if (!SCRIPT_URL) { showToast('❌ Configure l\'URL Apps Script','err'); window.scrollTo({top:0}); return; }
+  const res = type==='food' ? (LFR||computeFoodScore()) : (LTR||computeTreatScore());
+  const v = res.disqualified ? {stars:'❌',label:'DANGEREUX'} : getVerdict(res.total, type==='treat');
+  const cv = CV, ss = buildSourcesSummary();
+  const cap = cv.ca&&cv.p&&cv.p>0 ? (cv.ca/cv.p).toFixed(2) : '';
+  let payload = { type_analyse:type==='treat'?'FRIANDISE':'ALIMENT_COMPLET', score:res.total, appreciation:v.label, stars:v.stars, disqualified:res.disqualified, disq_reason:res.disq_reason||'', fiabilite_pct:ss.realPct, nb_opff:ss.opffFields.length, nb_manual:ss.manualFields.length, nb_fediaf:ss.fediafFields.length };
+  if (type==='food') { Object.assign(payload, {nom:gs('f_nom'),marque:gs('f_marque'),type:gs('f_type'),code:gs('f_code'),prot_pct:gn('f_prot_pct'),lip_pct:gn('f_lip_pct'),fibres_pct:gn('f_fibres_pct'),hum_pct:gn('f_hum_pct'),cendres_pct:gn('f_cendres_pct'),src_prot:gs('f_src_prot'),em_declared:gn('f_em_declared'),em_100g:cv.em_100g?Math.round(cv.em_100g):null,prot:cv.prot,lip:cv.lip,ca:cv.ca,p:cv.p,cap,pos_glu:gs('f_pos_glu'),bha:gs('f_bha'),color:gs('f_color'),pg:gs('f_pg'),sucre:gs('f_sucre'),antioxydant:gs('f_antioxydant'),toxiques:gs('f_toxiques'),src_prot_src:FIELD_SRC['f_prot_pct']||'fediaf',src_ca_src:FIELD_SRC['f_ca_pct']||'fediaf',src_em_src:FIELD_SRC['f_em_declared']||'fediaf'}); }
+  else { Object.assign(payload, {nom:gs('t_nom'),marque:gs('t_marque'),type:gs('t_type'),prot_pct:gn('t_prot_pct'),lip_pct:gn('t_lip_pct'),fibres_pct:gn('t_fibres_pct'),hum_pct:gn('t_hum_pct'),src_prot:gs('t_src_prot'),prot_first:gs('t_prot_first'),sucre:gs('t_sucre'),color:gs('t_color'),bha:gs('t_bha'),pg:gs('t_pg'),short_list:gs('t_short_list'),toxiques:gs('t_toxiques'),xylitol:gs('t_xylitol'),poids_chien:gn('t_poids_chien'),ration_g:gn('t_ration_g')}); }
+  const btn = document.getElementById('btnSend'), st = document.getElementById('sendStatus');
+  if (btn) { btn.disabled=true; btn.classList.add('sending'); btn.textContent='⏳ Envoi en cours…'; }
+  if (st) { st.className='send-status'; st.style.display='none'; }
+  try {
+    await fetch(SCRIPT_URL, {method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
+    if (st) { st.className='send-status ok'; st.textContent='✅ Données envoyées dans Google Sheets !'; }
+    if (btn) { btn.disabled=false; btn.classList.remove('sending'); btn.textContent='✅ Envoyé ! Renvoyer'; }
+    showToast('✅ Ligne ajoutée !','ok');
+  } catch(err) {
+    if (st) { st.className='send-status err'; st.textContent='❌ Erreur : '+err.message; }
+    if (btn) { btn.disabled=false; btn.classList.remove('sending'); btn.textContent='↩️ Réessayer'; }
+    showToast('❌ Erreur d\'envoi','err');
+  }
+}
+
+let toastTimer;
+function showToast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(type?' '+type:'');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.className='toast',3500);}
+</script>
+</body>
+</html>
